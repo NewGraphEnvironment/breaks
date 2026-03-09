@@ -55,7 +55,10 @@
 - [ ] Committed
 
 ### Phase 6: mod_export.R
-- [ ] Started
+- [x] Started
+- [x] downloadHandler for break_points CSV (all columns including CSV extras)
+- [x] downloadHandler for subbasins GPKG (EPSG:3005)
+- [x] devtools::load_all() succeeds
 - [ ] Committed
 
 ### Phase 7: data-raw/example_neexdzii.R

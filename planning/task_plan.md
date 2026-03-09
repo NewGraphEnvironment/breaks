@@ -60,9 +60,9 @@ Relates to NewGraphEnvironment/break#1.
 - [x] Commit
 
 ### Phase 6: mod_export.R — download handlers
-- [ ] downloadHandler for break_points.csv (ALL columns including CSV extras)
-- [ ] downloadHandler for subbasins.gpkg (EPSG:3005)
-- [ ] Commit
+- [x] downloadHandler for break_points.csv (ALL columns including CSV extras)
+- [x] downloadHandler for subbasins.gpkg (EPSG:3005)
+- [x] Commit
 
 ### Phase 7: data-raw/example_neexdzii.R
 - [ ] Worked example: Neexdzii Kwa AOI + break points
