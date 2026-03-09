@@ -27,13 +27,13 @@ Relates to NewGraphEnvironment/break#1.
 - [ ] Commit
 
 ### Phase 2: App skeleton + stub modules
-- [ ] `R/app_ui.R` (bslib page_sidebar layout)
-- [ ] `R/app_server.R` (shared reactives: aoi, streams, breaks_rv, map_click; module wiring; stream fetch on AOI change)
-- [ ] Stub `R/mod_aoi.R` (empty UI + server)
-- [ ] Stub `R/mod_map.R` (leafletOutput + blank map)
-- [ ] Stub `R/mod_breaks.R` (empty UI + server)
-- [ ] Stub `R/mod_export.R` (empty UI + server)
-- [ ] Commit
+- [x] `R/app_ui.R` (bslib page_sidebar layout)
+- [x] `R/app_server.R` (shared reactives: aoi, streams, breaks_rv, map_click; module wiring; stream fetch on AOI change)
+- [x] Stub `R/mod_aoi.R` (empty UI + server)
+- [x] Stub `R/mod_map.R` (leafletOutput + blank map)
+- [x] Stub `R/mod_breaks.R` (empty UI + server)
+- [x] Stub `R/mod_export.R` (empty UI + server)
+- [x] Commit
 
 ### Phase 3: mod_map.R — leaflet basemap + click handling
 - [ ] Provider tiles: OpenTopoMap, Satellite, OSM

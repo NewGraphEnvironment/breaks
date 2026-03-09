@@ -17,7 +17,11 @@
 - [ ] Committed
 
 ### Phase 2: App skeleton + stub modules
-- [ ] Started
+- [x] Started
+- [x] app_ui.R with bslib page_sidebar layout
+- [x] app_server.R with shared reactives + module wiring + stream fetch on AOI change
+- [x] Stub mod_aoi.R, mod_map.R (with basic leaflet), mod_breaks.R, mod_export.R
+- [x] devtools::load_all() succeeds
 - [ ] Committed
 
 ### Phase 3: mod_map.R
