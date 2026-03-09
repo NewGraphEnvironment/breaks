@@ -1,0 +1,11 @@
+^doc$
+^Meta$
+^planning$
+^CLAUDE\.md$
+^\.claude$
+^data-raw$
+^dev$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$

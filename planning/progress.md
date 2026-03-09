@@ -9,7 +9,11 @@
 - [ ] Committed PWF files
 
 ### Phase 1: Package scaffold
-- [ ] Started
+- [x] Started
+- [x] Created DESCRIPTION, LICENSE, app.R, R/run_app.R, R/app_config.R, R/break-package.R
+- [x] Created inst/golem-config.yml, inst/app/www/.gitkeep
+- [x] Created .Rbuildignore, .gitignore
+- [x] Generated NAMESPACE via devtools::document()
 - [ ] Committed
 
 ### Phase 2: App skeleton + stub modules

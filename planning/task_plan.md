@@ -14,16 +14,16 @@ Relates to NewGraphEnvironment/break#1.
 - [ ] Commit PWF files
 
 ### Phase 1: Package scaffold
-- [ ] `DESCRIPTION` (Package: break, Imports: golem, shiny, bslib, sf, leaflet, leaflet.extras, fresh, DT, dplyr, config, fs)
-- [ ] `LICENSE` (MIT, New Graph Environment Ltd.)
-- [ ] `app.R` (golem launcher: pkgload::load_all + run_app)
-- [ ] `R/run_app.R` (exported run_app with golem_opts)
-- [ ] `R/app_config.R` (app_sys + get_golem_config — from diggs)
-- [ ] `R/break-package.R` (package doc, @import shiny, @importFrom golem)
-- [ ] `inst/golem-config.yml` (golem_name: break)
-- [ ] `inst/app/www/.gitkeep`
-- [ ] `.Rbuildignore`, `.gitignore`
-- [ ] `NAMESPACE` (via devtools::document)
+- [x] `DESCRIPTION` (Package: break, Imports: golem, shiny, bslib, sf, leaflet, leaflet.extras, fresh, DT, dplyr, config, fs)
+- [x] `LICENSE` (MIT, New Graph Environment Ltd.)
+- [x] `app.R` (golem launcher: pkgload::load_all + run_app)
+- [x] `R/run_app.R` (exported run_app with golem_opts)
+- [x] `R/app_config.R` (app_sys + get_golem_config — from diggs)
+- [x] `R/break-package.R` (package doc, @import shiny, @importFrom golem)
+- [x] `inst/golem-config.yml` (golem_name: break)
+- [x] `inst/app/www/.gitkeep`
+- [x] `.Rbuildignore`, `.gitignore`
+- [x] `NAMESPACE` (via devtools::document)
 - [ ] Commit
 
 ### Phase 2: App skeleton + stub modules

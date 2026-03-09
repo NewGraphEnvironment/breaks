@@ -1,0 +1,43 @@
+Package: break
+Title: Interactive Watershed Break Point Delineation
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Al", "Irvine", email = "al@newgraphenvironment.com",
+           role = c("aut", "cre")),
+    person("New Graph Environment Ltd.", role = "cph")
+  )
+Description: Interactive Shiny app for clicking stream networks to place break
+    points, delineating upstream watersheds, and exporting sub-basins via
+    pairwise subtraction. Built on the fresh package for FWA-referenced
+    spatial hydrology queries.
+License: MIT + file LICENSE
+URL: https://github.com/NewGraphEnvironment/break,
+    https://newgraphenvironment.github.io/break/
+BugReports: https://github.com/NewGraphEnvironment/break/issues
+Depends:
+    R (>= 4.1)
+Imports:
+    bslib,
+    config (>= 0.3.1),
+    dplyr,
+    DT,
+    fresh,
+    fs,
+    golem (>= 0.4.0),
+    leaflet,
+    leaflet.extras,
+    sf,
+    shiny (>= 1.7.4)
+Suggests:
+    bookdown,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Remotes:
+    NewGraphEnvironment/fresh,
+    trafficonese/leaflet.extras
+Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.3
+VignetteBuilder: knitr
