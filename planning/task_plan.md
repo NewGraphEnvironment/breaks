@@ -36,13 +36,13 @@ Relates to NewGraphEnvironment/break#1.
 - [x] Commit
 
 ### Phase 3: mod_map.R — leaflet basemap + click handling
-- [ ] Provider tiles: OpenTopoMap, Satellite, OSM
-- [ ] Layer groups: AOI, Streams, Break Points, Watersheds, Sub-Basins
-- [ ] Reactive observers for AOI/streams/breaks/subbasins via leafletProxy
-- [ ] Forward map clicks to map_click() reactive
-- [ ] Draw toolbar for polygon AOI (leaflet.extras)
-- [ ] `R/utils_geo.R` (drawn_feature_to_sf, validate_geometry — from diggs)
-- [ ] Commit
+- [x] Provider tiles: OpenTopoMap, Satellite, OSM
+- [x] Layer groups: AOI, Streams, Break Points, Sub-Basins
+- [x] Reactive observers for AOI/streams/breaks/subbasins via leafletProxy
+- [x] Forward map clicks to map_click() reactive
+- [x] Draw toolbar for polygon AOI (leaflet.extras)
+- [x] `R/utils_geo.R` (drawn_feature_to_sf, validate_geometry — from diggs)
+- [x] Commit
 
 ### Phase 4: mod_aoi.R — 3 AOI entry points
 - [ ] Upload gpkg/geojson -> sf::st_read -> aoi()

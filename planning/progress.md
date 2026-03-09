@@ -25,7 +25,13 @@
 - [ ] Committed
 
 ### Phase 3: mod_map.R
-- [ ] Started
+- [x] Started
+- [x] Provider tiles (OpenTopoMap, Satellite, OSM) + layer controls
+- [x] Draw toolbar (polygon only) via leaflet.extras
+- [x] Reactive observers for AOI, streams, break points, sub-basins via leafletProxy
+- [x] Click forwarding (map_click + marker_click)
+- [x] utils_geo.R (drawn_feature_to_sf, validate_geometry)
+- [x] devtools::load_all() succeeds
 - [ ] Committed
 
 ### Phase 4: mod_aoi.R
