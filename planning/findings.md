@@ -35,6 +35,12 @@ mod_breaks snaps, manages points, computes subbasins
 mod_export reads breaks_rv for download
 ```
 
+## Errors Encountered
+
+| Error | Resolution |
+|-------|------------|
+| `invalid use of pipe placeholder` in `sf::st_union(d) \|> sf::st_sf(geometry = sf::st_geometry(_))` | R base pipe placeholder `_` only works in function call args, not nested. Split into two lines: `d_union <- sf::st_union(d); sf::st_sf(geometry = d_union)` |
+
 ## Reference Files
 
 | File | Key takeaway |

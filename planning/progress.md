@@ -44,7 +44,14 @@
 - [ ] Committed
 
 ### Phase 5: mod_breaks.R
-- [ ] Started
+- [x] Started
+- [x] CSV load with column preservation (lon/lat required, extras via bind_rows)
+- [x] Map click to add (snap via frs_point_snap)
+- [x] Marker click to remove / clear last / clear all
+- [x] Compute sub-basins (frs_watershed_at_measure + pairwise st_difference)
+- [x] DT tables for points and sub-basins
+- [x] Fixed pipe placeholder error (R 4.1 compat)
+- [x] devtools::load_all() succeeds
 - [ ] Committed
 
 ### Phase 6: mod_export.R

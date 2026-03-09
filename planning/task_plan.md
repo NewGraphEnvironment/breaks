@@ -52,12 +52,12 @@ Relates to NewGraphEnvironment/break#1.
 - [x] Commit
 
 ### Phase 5: mod_breaks.R — break point management + CSV column preservation
-- [ ] CSV load with column preservation (lon/lat required, extras preserved via bind_rows)
-- [ ] Map click to add break point (snap via frs_point_snap)
-- [ ] Remove by marker click / clear last / clear all
-- [ ] Compute sub-basins (delineate via frs_watershed_at_measure, pairwise st_difference)
-- [ ] DT tables for break points and sub-basins
-- [ ] Commit
+- [x] CSV load with column preservation (lon/lat required, extras preserved via bind_rows)
+- [x] Map click to add break point (snap via frs_point_snap)
+- [x] Remove by marker click / clear last / clear all
+- [x] Compute sub-basins (delineate via frs_watershed_at_measure, pairwise st_difference)
+- [x] DT tables for break points and sub-basins
+- [x] Commit
 
 ### Phase 6: mod_export.R — download handlers
 - [ ] downloadHandler for break_points.csv (ALL columns including CSV extras)
