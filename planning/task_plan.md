@@ -65,8 +65,8 @@ Relates to NewGraphEnvironment/break#1.
 - [x] Commit
 
 ### Phase 7: data-raw/example_neexdzii.R
-- [ ] Worked example: Neexdzii Kwa AOI + break points
-- [ ] Commit
+- [x] Worked example: Neexdzii Kwa AOI + break points
+- [x] Commit
 
 ## Key Design Decisions
 

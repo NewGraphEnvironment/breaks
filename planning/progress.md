@@ -62,5 +62,6 @@
 - [ ] Committed
 
 ### Phase 7: data-raw/example_neexdzii.R
-- [ ] Started
+- [x] Started
+- [x] Worked example: AOI delineation, stream fetch, snap, delineate, pairwise subtract
 - [ ] Committed
