@@ -45,11 +45,11 @@ Relates to NewGraphEnvironment/break#1.
 - [x] Commit
 
 ### Phase 4: mod_aoi.R — 3 AOI entry points
-- [ ] Upload gpkg/geojson -> sf::st_read -> aoi()
-- [ ] Watershed group dropdown -> frs_db_query -> aoi()
-- [ ] Click-to-delineate -> frs_point_snap + frs_watershed_at_measure -> aoi()
-- [ ] Draw polygon on map -> aoi() (via mod_map draw toolbar)
-- [ ] Commit
+- [x] Upload gpkg/geojson -> sf::st_read -> aoi()
+- [x] Watershed group dropdown -> frs_db_query -> aoi()
+- [x] Click-to-delineate -> frs_point_snap + frs_watershed_at_measure -> aoi()
+- [x] Draw polygon on map -> aoi() (via mod_map draw toolbar)
+- [x] Commit
 
 ### Phase 5: mod_breaks.R — break point management + CSV column preservation
 - [ ] CSV load with column preservation (lon/lat required, extras preserved via bind_rows)

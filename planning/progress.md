@@ -35,7 +35,12 @@
 - [ ] Committed
 
 ### Phase 4: mod_aoi.R
-- [ ] Started
+- [x] Started
+- [x] Upload gpkg/geojson
+- [x] Watershed group dropdown (server-side selectize from fwa_watershed_groups_poly)
+- [x] Click-to-delineate (snap + frs_watershed_at_measure)
+- [x] Draw polygon handled by mod_map draw toolbar
+- [x] devtools::load_all() succeeds
 - [ ] Committed
 
 ### Phase 5: mod_breaks.R
