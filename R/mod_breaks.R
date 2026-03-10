@@ -148,7 +148,8 @@ mod_breaks_server <- function(id, aoi, streams, breaks_rv, app_mode, map_click) 
         return()
       }
 
-      extra_cols <- setdiff(names(pts), c("lon", "lat"))
+      snap_cols <- c("lon", "lat", "id", "blk", "drm", "gnis_name", "dist_m")
+      extra_cols <- setdiff(names(pts), snap_cols)
       n <- nrow(pts)
       loaded <- 0L
 
