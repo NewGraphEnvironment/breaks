@@ -9,14 +9,14 @@ app_ui <- function(request) {
     bslib::page_sidebar(
       title = tags$span(
         tags$a(
-          href = "https://github.com/NewGraphEnvironment/break",
+          href = "https://github.com/NewGraphEnvironment/breaks",
           tags$img(
             src = "www/nge-icon.png",
             height = "36px",
             style = "margin-top: -4px; margin-right: 8px;"
           )
         ),
-        "break"
+        "breaks"
       ),
       sidebar = bslib::sidebar(
         width = 350,
@@ -43,7 +43,7 @@ golem_add_external_resources <- function() {
     favicon(),
     bundle_resources(
       path = app_sys("app/www"),
-      app_title = "break"
+      app_title = "breaks"
     )
   )
 }

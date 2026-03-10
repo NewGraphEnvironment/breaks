@@ -7,4 +7,4 @@ pkgload::load_all(
   attach_testthat = FALSE
 )
 
-break::run_app()
+breaks::run_app()

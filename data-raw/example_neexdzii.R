@@ -110,4 +110,4 @@ result$area_km2 <- round(as.numeric(st_area(st_transform(result, 3005))) / 1e6, 
 message("\nSub-basins:")
 print(st_drop_geometry(result))
 
-message("\nDone. Use break::run_app() for the interactive version.")
+message("\nDone. Use breaks::run_app() for the interactive version.")

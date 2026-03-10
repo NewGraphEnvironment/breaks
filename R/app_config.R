@@ -4,7 +4,7 @@
 #'   within your package. The default, none, returns the root of the app.
 #' @noRd
 app_sys <- function(...) {
-  system.file(..., package = "break")
+  system.file(..., package = "breaks")
 }
 
 #' Read App Config
