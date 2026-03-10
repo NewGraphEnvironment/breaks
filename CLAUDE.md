@@ -16,8 +16,8 @@ delineation](https://github.com/NewGraphEnvironment/break/issues/1)
 
 ## Ecosystem
 
-[`break`](https://www.newgraphenvironment.com/break/reference/break-package.md)
-is a sibling app in the NewGraphEnvironment family:
+[`break`](https://rdrr.io/r/base/Control.html) is a sibling app in the
+NewGraphEnvironment family:
 
 - **[fresh](https://github.com/NewGraphEnvironment/fresh)** —
   FWA-referenced spatial hydrology (data layer — all DB queries go
@@ -32,9 +32,8 @@ is a sibling app in the NewGraphEnvironment family:
   pattern
 
 Pipeline: `fresh` (network data) →
-[`break`](https://www.newgraphenvironment.com/break/reference/break-package.md)
-(delineate sub-basins) → `flooded` (delineate floodplains) → `drift`
-(classify land cover)
+[`break`](https://rdrr.io/r/base/Control.html) (delineate sub-basins) →
+`flooded` (delineate floodplains) → `drift` (classify land cover)
 
 ## Architecture
 

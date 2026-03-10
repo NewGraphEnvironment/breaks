@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Interactive Watershed Break Point Delineation • break</title>
+<title>Interactive Watershed Break Point Delineation • breaks</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -21,7 +21,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="index.html">break</a>
+    <a class="navbar-brand me-2" href="index.html">breaks</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
@@ -49,14 +49,14 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 id="break-">break <a class="anchor" aria-label="anchor" href="#break-"></a>
+<img src="logo.png" class="logo" alt=""><h1 id="breaks-">breaks <a class="anchor" aria-label="anchor" href="#breaks-"></a>
 </h1>
 </div>
 <p><strong>Interactive watershed break point delineation</strong> — a Shiny app for clicking stream networks to place break points, delineating upstream watersheds, and exporting sub-basins via pairwise subtraction.</p>
-<p>Given a stream network and an area of interest, break lets you place points on streams, snap them to the FWA network, delineate the upstream watershed for each, and compute non-overlapping sub-basins by subtracting upstream catchments from downstream ones. Upload a CSV with extra columns — they’re preserved through snap and export.</p>
+<p>Given a stream network and an area of interest, breaks lets you place points on streams, snap them to the FWA network, delineate the upstream watershed for each, and compute non-overlapping sub-basins by subtracting upstream catchments from downstream ones. Upload a CSV with extra columns — they’re preserved through snap and export.</p>
 <p><br></p>
 <p align="center">
-<img src="reference/figures/screenshot.png" width="90%" alt="break app screenshot showing sub-basins delineated along the Neexdzii Kwah watershed"></p>
+<img src="reference/figures/screenshot.png" width="90%" alt="breaks app screenshot showing sub-basins delineated along the Neexdzii Kwah watershed"></p>
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
@@ -67,14 +67,10 @@
 <div class="section level2">
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Requires PostgreSQL with fwapg (via fresh)</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># Set PG_*_SHARE env vars for database connection</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>break_app <span class="ot">&lt;-</span> <span class="cf">break</span><span class="sc">::</span>run_app</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">break_app</span>()</span></code></pre></div>
-<p>Note: <code><a href="reference/break-package.html">break</a></code> is a reserved word in R, so <code>break::run_app()</code> won’t parse directly. Use the assignment workaround above, or:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">pkgload</span><span class="fu">::</span><span class="fu"><a href="https://pkgload.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/run_app.html">run_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Requires PostgreSQL with fwapg (via fresh)</span></span>
+<span><span class="co"># Set PG_*_SHARE env vars for database connection</span></span>
+<span><span class="fu">breaks</span><span class="fu">::</span><span class="fu"><a href="reference/run_app.html">run_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="how-it-works">How It Works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
@@ -107,7 +103,7 @@
 <div class="section level2">
 <h2 id="part-of-the-ecosystem">Part of the Ecosystem<a class="anchor" aria-label="anchor" href="#part-of-the-ecosystem"></a>
 </h2>
-<p>break is one piece of a larger watershed analysis workflow:</p>
+<p>breaks is one piece of a larger watershed analysis workflow:</p>
 <table class="table">
 <colgroup>
 <col width="60%">
@@ -123,7 +119,7 @@
 <td>FWA-referenced spatial hydrology (data layer)</td>
 </tr>
 <tr class="even">
-<td><strong>break</strong></td>
+<td><strong>breaks</strong></td>
 <td>Delineate sub-basins from break points on stream networks</td>
 </tr>
 <tr class="odd">
@@ -136,7 +132,7 @@
 </tr>
 </tbody>
 </table>
-<p>Pipeline: fresh (network data) → break (sub-basins) → flooded (floodplains) → drift (land cover change).</p>
+<p>Pipeline: fresh (network data) → breaks (sub-basins) → flooded (floodplains) → drift (land cover change).</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -160,7 +156,7 @@
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing break</a></li>
+<li><a href="authors.html#citation">Citing breaks</a></li>
 </ul>
 </div>
 
