@@ -24,7 +24,7 @@ mod_export_server <- function(id, breaks_rv) {
 
     output$dl_breaks <- downloadHandler(
       filename = function() {
-        paste0("break_points_", format(Sys.Date(), "%Y%m%d"), ".csv")
+        "break_points.csv"
       },
       content = function(file) {
         write.csv(breaks_rv$points, file, row.names = FALSE)
@@ -33,7 +33,7 @@ mod_export_server <- function(id, breaks_rv) {
 
     output$dl_subbasins <- downloadHandler(
       filename = function() {
-        paste0("subbasins_", format(Sys.Date(), "%Y%m%d"), ".gpkg")
+        "subbasins.gpkg"
       },
       content = function(file) {
         req(breaks_rv$subbasins)

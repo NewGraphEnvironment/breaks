@@ -69,9 +69,13 @@ mod_map_server <- function(id, aoi, aoi_meta, streams, breaks_rv, map_click) {
       }
     }
 
-    # Forward map clicks for break point placement
+    # Forward map clicks — tag with timestamp so repeated clicks
+    # at the same location still trigger reactivity
     observeEvent(input$map_click, {
-      map_click(input$map_click)
+      click <- input$map_click
+      click$.ts <- Sys.time()
+      click$.source <- "map"
+      map_click(click)
     })
 
     # Forward drawn polygon as AOI
@@ -186,12 +190,5 @@ mod_map_server <- function(id, aoi, aoi_meta, streams, breaks_rv, map_click) {
       }
     })
 
-    # Forward marker clicks for break point removal
-    observeEvent(input$map_marker_click, {
-      click <- input$map_marker_click
-      if (!is.null(click$id) && grepl("^break_", click$id)) {
-        map_click(click)
-      }
-    })
   })
 }

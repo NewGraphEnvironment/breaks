@@ -4,37 +4,16 @@
 #' click-to-delineate, or upload a gpkg/geojson file. Drawing on the map is
 #' handled in mod_map via the draw toolbar.
 #'
+#' Controls collapse once AOI is set (app switches to break point mode).
+#' "Reset AOI" clears everything and returns to AOI selection.
+#'
 #' @param id Module namespace id
 #' @noRd
 mod_aoi_ui <- function(id) {
   ns <- NS(id)
   tagList(
     h4("Area of Interest"),
-    radioButtons(ns("aoi_method"), NULL,
-      choices = c(
-        "Watershed Group" = "wsg",
-        "Click to Delineate" = "click",
-        "Upload File" = "upload"
-      ),
-      selected = "upload", inline = TRUE
-    ),
-    conditionalPanel(
-      condition = sprintf("input['%s'] == 'wsg'", ns("aoi_method")),
-      selectizeInput(ns("wsg_name"), "Watershed Group",
-        choices = NULL,
-        options = list(placeholder = "Type to search..."))
-    ),
-    conditionalPanel(
-      condition = sprintf("input['%s'] == 'click'", ns("aoi_method")),
-      helpText("Click the map to place a point, then delineate its upstream watershed as AOI."),
-      actionButton(ns("delineate_aoi"), "Delineate AOI", class = "btn-sm btn-primary")
-    ),
-    conditionalPanel(
-      condition = sprintf("input['%s'] == 'upload'", ns("aoi_method")),
-      fileInput(ns("upload_aoi"), "Upload AOI (gpkg or geojson)",
-        accept = c(".gpkg", ".geojson", ".json")),
-      helpText("Or draw a polygon on the map.")
-    )
+    uiOutput(ns("aoi_controls"))
   )
 }
 
@@ -43,19 +22,80 @@ mod_aoi_ui <- function(id) {
 #' @param id Module namespace id
 #' @param aoi ReactiveVal for the AOI polygon
 #' @param aoi_meta ReactiveVal for AOI metadata (method, blk, drm, wsg_code)
+#' @param app_mode ReactiveVal for app mode ("aoi" or "breaks")
 #' @param map_click ReactiveVal for map click events
 #' @noRd
-mod_aoi_server <- function(id, aoi, aoi_meta, map_click) {
+mod_aoi_server <- function(id, aoi, aoi_meta, app_mode, map_click) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     # Store click coords for delineation
     click_coords <- reactiveVal(NULL)
-
-    # Populate watershed group dropdown server-side
     wsg_lookup <- reactiveVal(NULL)
 
+    # Dynamic UI: show controls or summary based on app_mode
+    output$aoi_controls <- renderUI({
+      if (app_mode() == "breaks" && !is.null(aoi())) {
+        # AOI is set — show summary and reset button
+        meta <- aoi_meta()
+        method_label <- switch(meta$method %||% "unknown",
+          wsg = paste("Watershed Group:", meta$wsg_code),
+          click = paste("Delineated: blk=", meta$blk),
+          upload = "Uploaded file",
+          draw = "Drawn polygon",
+          "Unknown"
+        )
+        tagList(
+          tags$p(tags$strong("AOI set"), tags$br(),
+                 tags$small(method_label)),
+          actionButton(ns("reset_aoi"), "Reset AOI",
+                       class = "btn-sm btn-outline-danger")
+        )
+      } else {
+        # AOI selection mode
+        tagList(
+          radioButtons(ns("aoi_method"), NULL,
+            choices = c(
+              "Watershed Group" = "wsg",
+              "Click to Delineate" = "click",
+              "Upload File" = "upload"
+            ),
+            selected = "upload", inline = TRUE
+          ),
+          conditionalPanel(
+            condition = sprintf("input['%s'] == 'wsg'", ns("aoi_method")),
+            selectizeInput(ns("wsg_name"), "Watershed Group",
+              choices = NULL,
+              options = list(placeholder = "Type to search..."))
+          ),
+          conditionalPanel(
+            condition = sprintf("input['%s'] == 'click'", ns("aoi_method")),
+            helpText("Click the map to place a point, then delineate its upstream watershed as AOI."),
+            actionButton(ns("delineate_aoi"), "Delineate AOI",
+                         class = "btn-sm btn-primary")
+          ),
+          conditionalPanel(
+            condition = sprintf("input['%s'] == 'upload'", ns("aoi_method")),
+            fileInput(ns("upload_aoi"), "Upload AOI (gpkg or geojson)",
+              accept = c(".gpkg", ".geojson", ".json")),
+            helpText("Or draw a polygon on the map.")
+          )
+        )
+      }
+    })
+
+    # Reset AOI — clear everything and return to AOI mode
+    observeEvent(input$reset_aoi, {
+      aoi(NULL)
+      aoi_meta(NULL)
+      app_mode("aoi")
+      showNotification("AOI cleared", type = "message")
+    })
+
+    # Populate watershed group dropdown server-side
     observe({
+      req(app_mode() == "aoi")
+      if (!is.null(wsg_lookup())) return()
       result <- tryCatch({
         fresh::frs_db_query(
           "SELECT DISTINCT watershed_group_code, watershed_group_name
@@ -69,16 +109,20 @@ mod_aoi_server <- function(id, aoi, aoi_meta, map_click) {
       })
       if (!is.null(result)) {
         wsg_lookup(result)
-        updateSelectizeInput(session, "wsg_name",
-          choices = result$watershed_group_name, server = TRUE)
       }
+    })
+
+    # Update selectize when lookup is ready and UI is showing
+    observe({
+      req(app_mode() == "aoi", !is.null(wsg_lookup()))
+      updateSelectizeInput(session, "wsg_name",
+        choices = wsg_lookup()$watershed_group_name, server = TRUE)
     })
 
     # Method 1: Watershed group selection
     observeEvent(input$wsg_name, {
-      req(input$aoi_method == "wsg", input$wsg_name != "")
+      req(app_mode() == "aoi", input$aoi_method == "wsg", input$wsg_name != "")
       withProgress(message = "Loading watershed group...", {
-        # Look up the watershed_group_code
         lookup <- wsg_lookup()
         wsg_code <- lookup$watershed_group_code[
           lookup$watershed_group_name == input$wsg_name
@@ -87,7 +131,6 @@ mod_aoi_server <- function(id, aoi, aoi_meta, map_click) {
           showNotification("Watershed group not found", type = "error")
           return()
         }
-
         result <- tryCatch(
           fresh::frs_db_query(sprintf(
             "SELECT ST_Transform(geom, 4326) as geom
@@ -109,18 +152,20 @@ mod_aoi_server <- function(id, aoi, aoi_meta, map_click) {
       })
     })
 
-    # Method 2: Click-to-delineate — capture click
+    # Method 2: Click-to-delineate — capture click (only in AOI mode)
     observe({
-      req(input$aoi_method == "click")
+      req(app_mode() == "aoi")
       click <- map_click()
-      if (!is.null(click) && is.null(click$id)) {
+      req(!is.null(click), is.null(click$id))
+      isolate({
+        req(input$aoi_method == "click")
         click_coords(click)
         showNotification(
           paste0("Click captured: ", round(click$lng, 4), ", ", round(click$lat, 4),
                  ". Press 'Delineate AOI' to proceed."),
           type = "message"
         )
-      }
+      })
     })
 
     # Method 2: Delineate watershed from click

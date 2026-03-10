@@ -38,9 +38,10 @@ mod_breaks_ui <- function(id) {
 #' @param aoi ReactiveVal for the AOI polygon
 #' @param streams ReactiveVal for stream segments
 #' @param breaks_rv ReactiveValues for break points and subbasins
+#' @param app_mode ReactiveVal for app mode ("aoi" or "breaks")
 #' @param map_click ReactiveVal for map click events
 #' @noRd
-mod_breaks_server <- function(id, aoi, streams, breaks_rv, map_click) {
+mod_breaks_server <- function(id, aoi, streams, breaks_rv, app_mode, map_click) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -76,7 +77,7 @@ mod_breaks_server <- function(id, aoi, streams, breaks_rv, map_click) {
 
     # --- Map click to add break point ---
     observeEvent(map_click(), {
-      req(input$mode == "add")
+      req(app_mode() == "breaks", input$mode == "add")
       click <- map_click()
       # Skip marker clicks (those have an id starting with "break_")
       if (!is.null(click$id) && grepl("^break_", click$id)) return()
@@ -107,16 +108,24 @@ mod_breaks_server <- function(id, aoi, streams, breaks_rv, map_click) {
       )
     })
 
-    # --- Marker click to remove break point (Remove mode) ---
+    # --- Click to remove nearest break point (Remove mode) ---
+    # Circle markers don't reliably fire marker_click/shape_click,
+    # so match click coords against existing points by proximity
     observeEvent(map_click(), {
-      req(input$mode == "remove")
+      req(app_mode() == "breaks", input$mode == "remove")
       click <- map_click()
-      if (is.null(click$id) || !grepl("^break_", click$id)) return()
+      req(!is.null(click$lng), !is.null(click$lat))
+      pts <- breaks_rv$points
+      if (nrow(pts) == 0) return()
 
-      rm_id <- as.integer(sub("break_", "", click$id))
-      if (!rm_id %in% breaks_rv$points$id) return()
+      # Find nearest break point (simple Euclidean on lon/lat is fine at map scale)
+      dists <- sqrt((pts$lon - click$lng)^2 + (pts$lat - click$lat)^2)
+      nearest <- which.min(dists)
+      # Threshold ~0.01 degrees (~1km) to avoid removing distant points
+      if (dists[nearest] > 0.01) return()
 
-      breaks_rv$points <- breaks_rv$points[breaks_rv$points$id != rm_id, ]
+      rm_id <- pts$id[nearest]
+      breaks_rv$points <- pts[pts$id != rm_id, ]
       breaks_rv$watersheds[[as.character(rm_id)]] <- NULL
       breaks_rv$subbasins <- NULL
 

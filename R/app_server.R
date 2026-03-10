@@ -6,6 +6,7 @@
 app_server <- function(input, output, session) {
   # Shared reactive values
 
+  app_mode <- reactiveVal("aoi")  # "aoi" or "breaks"
   aoi <- reactiveVal(NULL)
   aoi_meta <- reactiveVal(NULL)  # list(method, blk, drm, wsg_code)
   streams <- reactiveVal(NULL)
@@ -21,12 +22,21 @@ app_server <- function(input, output, session) {
   )
   map_click <- reactiveVal(NULL)
 
+  # Auto-switch to breaks mode when AOI is set
+  observeEvent(aoi(), {
+    if (!is.null(aoi())) {
+      app_mode("breaks")
+    }
+  })
+
   # Wire modules
-  mod_aoi_server("aoi", aoi = aoi, aoi_meta = aoi_meta, map_click = map_click)
+  mod_aoi_server("aoi", aoi = aoi, aoi_meta = aoi_meta,
+                 app_mode = app_mode, map_click = map_click)
   mod_map_server("map", aoi = aoi, aoi_meta = aoi_meta, streams = streams,
                  breaks_rv = breaks_rv, map_click = map_click)
   mod_breaks_server("breaks", aoi = aoi, streams = streams,
-                    breaks_rv = breaks_rv, map_click = map_click)
+                    breaks_rv = breaks_rv, app_mode = app_mode,
+                    map_click = map_click)
   mod_export_server("export", breaks_rv = breaks_rv)
 
   # Clean streams for leaflet display
@@ -38,7 +48,6 @@ app_server <- function(input, output, session) {
   }
 
   # Fetch streams when AOI changes — method-aware
-
   observeEvent(aoi(), {
     req(aoi())
     meta <- aoi_meta()
@@ -47,11 +56,9 @@ app_server <- function(input, output, session) {
     withProgress(message = "Fetching streams...", {
       result <- tryCatch({
         if (method == "wsg" && !is.null(meta$wsg_code)) {
-          # Watershed group: fetch by watershed_group_code
           fresh::frs_stream_fetch(watershed_group_code = meta$wsg_code)
 
         } else if (method == "click" && !is.null(meta$blk) && !is.null(meta$drm)) {
-          # Click-to-delineate: fetch upstream network
           fresh::frs_network(
             blue_line_key = meta$blk,
             downstream_route_measure = meta$drm,
@@ -59,11 +66,11 @@ app_server <- function(input, output, session) {
           )
 
         } else {
-          # Upload/draw: fetch by bbox then intersect with AOI
-          bbox_3005 <- sf::st_bbox(sf::st_transform(aoi(), 3005))
+          aoi_clean <- sf::st_zm(aoi(), drop = TRUE)
+          aoi_3005 <- sf::st_transform(aoi_clean, 3005)
+          bbox_3005 <- sf::st_bbox(aoi_3005)
           fetched <- fresh::frs_stream_fetch(bbox = as.numeric(bbox_3005))
-          # Filter to streams that actually intersect the AOI
-          aoi_3005 <- sf::st_transform(aoi(), 3005)
+          fetched <- sf::st_zm(fetched, drop = TRUE)
           hits <- sf::st_intersects(fetched, aoi_3005, sparse = FALSE)[, 1]
           fetched[hits, ]
         }
