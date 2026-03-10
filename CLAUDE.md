@@ -1,4 +1,4 @@
-# break
+# breaks
 
 Interactive watershed break point delineation. golem-based Shiny app for
 clicking stream networks to place break points, delineating upstream
@@ -6,18 +6,14 @@ watersheds, and exporting sub-basins via pairwise subtraction.
 
 ## Repository Context
 
-**Repository:** NewGraphEnvironment/break **Primary Language:** R (golem
-Shiny package) **Entry Point:** `app.R` (golem launcher via
+**Repository:** NewGraphEnvironment/breaks **Primary Language:** R
+(golem Shiny package) **Entry Point:** `app.R` (golem launcher via
 [`pkgload::load_all()`](https://pkgload.r-lib.org/reference/load_all.html) +
-[`run_app()`](https://www.newgraphenvironment.com/breaks/reference/run_app.md))
-**Issue:** [\#1 — Scaffold golem app with AOI selection and FWA break
-point
-delineation](https://github.com/NewGraphEnvironment/break/issues/1)
+[`breaks::run_app()`](https://www.newgraphenvironment.com/breaks/reference/run_app.md))
 
 ## Ecosystem
 
-[`break`](https://rdrr.io/r/base/Control.html) is a sibling app in the
-NewGraphEnvironment family:
+`breaks` is a sibling app in the NewGraphEnvironment family:
 
 - **[fresh](https://github.com/NewGraphEnvironment/fresh)** —
   FWA-referenced spatial hydrology (data layer — all DB queries go
@@ -31,8 +27,7 @@ NewGraphEnvironment family:
 - **[fly](https://github.com/NewGraphEnvironment/fly)** — sibling app
   pattern
 
-Pipeline: `fresh` (network data) →
-[`break`](https://rdrr.io/r/base/Control.html) (delineate sub-basins) →
+Pipeline: `fresh` (network data) → `breaks` (delineate sub-basins) →
 `flooded` (delineate floodplains) → `drift` (classify land cover)
 
 ## Architecture
@@ -42,7 +37,7 @@ Pipeline: `fresh` (network data) →
       app_ui.R           — bslib page_sidebar
       app_server.R       — wires modules
       app_config.R       — app_sys() and get_golem_config() helpers
-      break-package.R    — package-level doc and imports
+      breaks-package.R   — package-level doc and imports
       mod_aoi.R          — AOI selection (3 methods: watershed group dropdown, click-to-delineate, upload gpkg/geojson)
       mod_map.R          — leaflet map, click handling, stream display
       mod_breaks.R       — break point management, snap, delineate, pairwise subtraction
@@ -82,7 +77,7 @@ click basemap → snap via
 
 All database access through
 [`fresh::frs_db_conn()`](https://newgraphenvironment.github.io/fresh/reference/frs_db_conn.html)
-using `PG_*_SHARE` env vars. No hand-rolled SQL in break.
+using `PG_*_SHARE` env vars. No hand-rolled SQL in breaks.
 
 ### golem conventions (follow diggs pattern)
 
