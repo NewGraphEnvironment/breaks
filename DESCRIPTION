@@ -1,6 +1,6 @@
 Package: breaks
 Title: Interactive Watershed Break Point Delineation
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Al", "Irvine", email = "al@newgraphenvironment.com",
            role = c("aut", "cre")),
