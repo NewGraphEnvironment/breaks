@@ -7,7 +7,17 @@ app_ui <- function(request) {
   tagList(
     golem_add_external_resources(),
     bslib::page_sidebar(
-      title = "break",
+      title = tags$span(
+        tags$a(
+          href = "https://github.com/NewGraphEnvironment/break",
+          tags$img(
+            src = "www/nge-icon.png",
+            height = "36px",
+            style = "margin-top: -4px; margin-right: 8px;"
+          )
+        ),
+        "break"
+      ),
       sidebar = bslib::sidebar(
         width = 350,
         mod_aoi_ui("aoi"),

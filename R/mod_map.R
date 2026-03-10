@@ -3,6 +3,7 @@
 #' @param id Module namespace id
 #' @noRd
 mod_map_ui <- function(id) {
+
   ns <- NS(id)
   leaflet::leafletOutput(ns("map"), height = "85vh")
 }
@@ -15,11 +16,11 @@ mod_map_ui <- function(id) {
 #' @param breaks_rv ReactiveValues for break points and subbasins
 #' @param map_click ReactiveVal for forwarding map click events
 #' @noRd
-mod_map_server <- function(id, aoi, streams, breaks_rv, map_click) {
+mod_map_server <- function(id, aoi, aoi_meta, streams, breaks_rv, map_click) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    # Base map
+    # Base map — no overlay groups until data arrives
     output$map <- leaflet::renderLeaflet({
       leaflet::leaflet() |>
         leaflet::addProviderTiles("OpenTopoMap", group = "Topo") |>
@@ -39,11 +40,34 @@ mod_map_server <- function(id, aoi, streams, breaks_rv, map_click) {
         ) |>
         leaflet::addLayersControl(
           baseGroups = c("Topo", "Satellite", "OSM"),
-          overlayGroups = c("AOI", "Streams", "Break Points", "Sub-Basins"),
           position = "topright"
         ) |>
         leaflet::addScaleBar(position = "bottomleft")
     })
+
+    # Track which overlay groups exist so we can rebuild layer control
+    active_groups <- reactiveVal(character(0))
+
+    rebuild_layer_control <- function(proxy, groups) {
+      proxy |>
+        leaflet::removeLayersControl() |>
+        leaflet::addLayersControl(
+          baseGroups = c("Topo", "Satellite", "OSM"),
+          overlayGroups = groups,
+          position = "topright"
+        )
+      # Show all active groups by default
+      for (g in groups) {
+        proxy |> leaflet::showGroup(g)
+      }
+    }
+
+    add_group <- function(group_name) {
+      current <- active_groups()
+      if (!group_name %in% current) {
+        active_groups(c(current, group_name))
+      }
+    }
 
     # Forward map clicks for break point placement
     observeEvent(input$map_click, {
@@ -54,39 +78,50 @@ mod_map_server <- function(id, aoi, streams, breaks_rv, map_click) {
     observeEvent(input$map_draw_new_feature, {
       drawn <- drawn_feature_to_sf(input$map_draw_new_feature)
       if (!is.null(drawn) && nrow(drawn) > 0) {
-        # Access the parent aoi reactiveVal via the passed reference
+        aoi_meta(list(method = "draw"))
         aoi(drawn)
       }
     })
 
     # Display AOI polygon
-    observe({
+    observeEvent(aoi(), {
       proxy <- leaflet::leafletProxy("map")
       proxy |> leaflet::clearGroup("AOI")
       aoi_data <- aoi()
-      if (!is.null(aoi_data)) {
+      if (!is.null(aoi_data) && nrow(aoi_data) > 0) {
+        aoi_data <- sf::st_zm(aoi_data, drop = TRUE)
+        aoi_data <- aoi_data[!sf::st_is_empty(aoi_data), ]
+        if (nrow(aoi_data) == 0) return()
+        aoi_data <- sf::st_make_valid(aoi_data)
         proxy |>
           leaflet::addPolygons(
             data = aoi_data,
             color = "#ff7800", weight = 2,
             fillColor = "#ff7800", fillOpacity = 0.1,
             group = "AOI"
-          ) |>
-          leaflet::fitBounds(
-            lng1 = sf::st_bbox(aoi_data)[["xmin"]],
-            lat1 = sf::st_bbox(aoi_data)[["ymin"]],
-            lng2 = sf::st_bbox(aoi_data)[["xmax"]],
-            lat2 = sf::st_bbox(aoi_data)[["ymax"]]
           )
+        bb <- sf::st_bbox(aoi_data)
+        if (!any(is.na(bb))) {
+          proxy |>
+            leaflet::fitBounds(
+              lng1 = bb[["xmin"]], lat1 = bb[["ymin"]],
+              lng2 = bb[["xmax"]], lat2 = bb[["ymax"]]
+            )
+        }
+        add_group("AOI")
+        rebuild_layer_control(proxy, active_groups())
       }
     })
 
     # Display streams
-    observe({
+    observeEvent(streams(), {
       proxy <- leaflet::leafletProxy("map")
       proxy |> leaflet::clearGroup("Streams")
       streams_data <- streams()
       if (!is.null(streams_data) && nrow(streams_data) > 0) {
+        # Drop empty geometries that crash leaflet
+        streams_data <- streams_data[!sf::st_is_empty(streams_data), ]
+        if (nrow(streams_data) == 0) return()
         proxy |>
           leaflet::addPolylines(
             data = streams_data,
@@ -98,6 +133,8 @@ mod_map_server <- function(id, aoi, streams, breaks_rv, map_click) {
             ),
             group = "Streams"
           )
+        add_group("Streams")
+        rebuild_layer_control(proxy, active_groups())
       }
     })
 
@@ -119,6 +156,8 @@ mod_map_server <- function(id, aoi, streams, breaks_rv, map_click) {
               layerId = paste0("break_", pts$id[i])
             )
         }
+        add_group("Break Points")
+        rebuild_layer_control(proxy, active_groups())
       }
     })
 
@@ -142,6 +181,8 @@ mod_map_server <- function(id, aoi, streams, breaks_rv, map_click) {
             ),
             group = "Sub-Basins"
           )
+        add_group("Sub-Basins")
+        rebuild_layer_control(proxy, active_groups())
       }
     })
 

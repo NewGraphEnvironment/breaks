@@ -42,9 +42,10 @@ mod_aoi_ui <- function(id) {
 #'
 #' @param id Module namespace id
 #' @param aoi ReactiveVal for the AOI polygon
+#' @param aoi_meta ReactiveVal for AOI metadata (method, blk, drm, wsg_code)
 #' @param map_click ReactiveVal for map click events
 #' @noRd
-mod_aoi_server <- function(id, aoi, map_click) {
+mod_aoi_server <- function(id, aoi, aoi_meta, map_click) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -52,33 +53,47 @@ mod_aoi_server <- function(id, aoi, map_click) {
     click_coords <- reactiveVal(NULL)
 
     # Populate watershed group dropdown server-side
+    wsg_lookup <- reactiveVal(NULL)
+
     observe({
-      wsg_names <- tryCatch({
-        result <- fresh::frs_db_query(
-          "SELECT DISTINCT watershed_group_name
+      result <- tryCatch({
+        fresh::frs_db_query(
+          "SELECT DISTINCT watershed_group_code, watershed_group_name
            FROM whse_basemapping.fwa_watershed_groups_poly
-           ORDER BY 1"
+           ORDER BY watershed_group_name"
         )
-        result$watershed_group_name
       }, error = function(e) {
         showNotification(paste("Could not load watershed groups:", e$message),
                          type = "warning")
-        character(0)
+        NULL
       })
-      updateSelectizeInput(session, "wsg_name",
-        choices = wsg_names, server = TRUE)
+      if (!is.null(result)) {
+        wsg_lookup(result)
+        updateSelectizeInput(session, "wsg_name",
+          choices = result$watershed_group_name, server = TRUE)
+      }
     })
 
     # Method 1: Watershed group selection
     observeEvent(input$wsg_name, {
       req(input$aoi_method == "wsg", input$wsg_name != "")
       withProgress(message = "Loading watershed group...", {
+        # Look up the watershed_group_code
+        lookup <- wsg_lookup()
+        wsg_code <- lookup$watershed_group_code[
+          lookup$watershed_group_name == input$wsg_name
+        ]
+        if (length(wsg_code) == 0) {
+          showNotification("Watershed group not found", type = "error")
+          return()
+        }
+
         result <- tryCatch(
           fresh::frs_db_query(sprintf(
             "SELECT ST_Transform(geom, 4326) as geom
              FROM whse_basemapping.fwa_watershed_groups_poly
-             WHERE watershed_group_name = '%s'",
-            gsub("'", "''", input$wsg_name)
+             WHERE watershed_group_code = '%s'",
+            wsg_code[1]
           )),
           error = function(e) {
             showNotification(paste("Watershed group query failed:", e$message),
@@ -87,6 +102,7 @@ mod_aoi_server <- function(id, aoi, map_click) {
           }
         )
         if (!is.null(result) && nrow(result) > 0) {
+          aoi_meta(list(method = "wsg", wsg_code = wsg_code[1]))
           aoi(sf::st_union(result) |> sf::st_sf())
           showNotification(paste("AOI set:", input$wsg_name), type = "message")
         }
@@ -136,6 +152,11 @@ mod_aoi_server <- function(id, aoi, map_click) {
         )
         if (!is.null(ws) && nrow(ws) > 0) {
           ws <- sf::st_transform(ws, 4326)
+          aoi_meta(list(
+            method = "click",
+            blk = snap$blue_line_key[1],
+            drm = snap$downstream_route_measure[1]
+          ))
           aoi(ws)
           showNotification(
             paste0("AOI delineated: ", snap$gnis_name[1],
@@ -160,6 +181,7 @@ mod_aoi_server <- function(id, aoi, map_click) {
         NULL
       })
       if (!is.null(result) && nrow(result) > 0) {
+        aoi_meta(list(method = "upload"))
         aoi(result)
         showNotification("AOI loaded from file", type = "message")
       }
