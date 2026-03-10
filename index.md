@@ -19,7 +19,7 @@ Kwah watershed](reference/figures/screenshot.png)
 
 ``` r
 # install.packages("pak")
-pak::pak("NewGraphEnvironment/break")
+pak::pak("NewGraphEnvironment/breaks")
 ```
 
 ## Quick Start

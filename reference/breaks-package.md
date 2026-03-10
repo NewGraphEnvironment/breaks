@@ -9,11 +9,11 @@ spatial hydrology queries.
 
 Useful links:
 
-- <https://github.com/NewGraphEnvironment/break>
+- <https://github.com/NewGraphEnvironment/breaks>
 
-- <https://www.newgraphenvironment.com/break/>
+- <https://www.newgraphenvironment.com/breaks/>
 
-- Report bugs at <https://github.com/NewGraphEnvironment/break/issues>
+- Report bugs at <https://github.com/NewGraphEnvironment/breaks/issues>
 
 ## Author
 

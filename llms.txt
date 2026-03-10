@@ -19,7 +19,7 @@ Kwah watershed](reference/figures/screenshot.png)
 
 ``` r
 # install.packages("pak")
-pak::pak("NewGraphEnvironment/break")
+pak::pak("NewGraphEnvironment/breaks")
 ```
 
 ## Quick Start
@@ -75,6 +75,6 @@ Pipeline: fresh (network data) → breaks (sub-basins) → flooded
 
 ## All functions
 
-- [`run_app()`](https://www.newgraphenvironment.com/break/reference/run_app.md)
+- [`run_app()`](https://www.newgraphenvironment.com/breaks/reference/run_app.md)
   : Run the Shiny Application
 
