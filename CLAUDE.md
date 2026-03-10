@@ -1,17 +1,16 @@
-# break
+# breaks
 
 Interactive watershed break point delineation. golem-based Shiny app for clicking stream networks to place break points, delineating upstream watersheds, and exporting sub-basins via pairwise subtraction.
 
 ## Repository Context
 
-**Repository:** NewGraphEnvironment/break
+**Repository:** NewGraphEnvironment/breaks
 **Primary Language:** R (golem Shiny package)
-**Entry Point:** `app.R` (golem launcher via `pkgload::load_all()` + `run_app()`)
-**Issue:** [#1 — Scaffold golem app with AOI selection and FWA break point delineation](https://github.com/NewGraphEnvironment/break/issues/1)
+**Entry Point:** `app.R` (golem launcher via `pkgload::load_all()` + `breaks::run_app()`)
 
 ## Ecosystem
 
-`break` is a sibling app in the NewGraphEnvironment family:
+`breaks` is a sibling app in the NewGraphEnvironment family:
 
 - **[fresh](https://github.com/NewGraphEnvironment/fresh)** — FWA-referenced spatial hydrology (data layer — all DB queries go through fresh)
 - **[flooded](https://github.com/NewGraphEnvironment/flooded)** — floodplain delineation (generates optional AOI overlays)
@@ -19,7 +18,7 @@ Interactive watershed break point delineation. golem-based Shiny app for clickin
 - **[diggs](https://github.com/NewGraphEnvironment/diggs)** — golem Shiny app pattern to follow (BC Historic Airphoto Explorer)
 - **[fly](https://github.com/NewGraphEnvironment/fly)** — sibling app pattern
 
-Pipeline: `fresh` (network data) → `break` (delineate sub-basins) → `flooded` (delineate floodplains) → `drift` (classify land cover)
+Pipeline: `fresh` (network data) → `breaks` (delineate sub-basins) → `flooded` (delineate floodplains) → `drift` (classify land cover)
 
 ## Architecture
 
@@ -29,7 +28,7 @@ R/
   app_ui.R           — bslib page_sidebar
   app_server.R       — wires modules
   app_config.R       — app_sys() and get_golem_config() helpers
-  break-package.R    — package-level doc and imports
+  breaks-package.R   — package-level doc and imports
   mod_aoi.R          — AOI selection (3 methods: watershed group dropdown, click-to-delineate, upload gpkg/geojson)
   mod_map.R          — leaflet map, click handling, stream display
   mod_breaks.R       — break point management, snap, delineate, pairwise subtraction
@@ -57,7 +56,7 @@ Three methods all set a reactive `aoi()` polygon:
 5. Export `subbasins.gpkg` + `break_points.csv`
 
 ### DB connection
-All database access through `fresh::frs_db_conn()` using `PG_*_SHARE` env vars. No hand-rolled SQL in break.
+All database access through `fresh::frs_db_conn()` using `PG_*_SHARE` env vars. No hand-rolled SQL in breaks.
 
 ### golem conventions (follow diggs pattern)
 - `DESCRIPTION` for package metadata and Imports
