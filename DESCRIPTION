@@ -12,7 +12,7 @@ Description: Interactive Shiny app for clicking stream networks to place break
     spatial hydrology queries.
 License: MIT + file LICENSE
 URL: https://github.com/NewGraphEnvironment/break,
-    https://newgraphenvironment.github.io/break/
+    https://www.newgraphenvironment.com/break/
 BugReports: https://github.com/NewGraphEnvironment/break/issues
 Depends:
     R (>= 4.1)
