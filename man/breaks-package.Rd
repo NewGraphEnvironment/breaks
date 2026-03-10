@@ -13,9 +13,9 @@ Interactive Shiny app for clicking stream networks to place break points, deline
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/NewGraphEnvironment/break}
-  \item \url{https://www.newgraphenvironment.com/break/}
-  \item Report bugs at \url{https://github.com/NewGraphEnvironment/break/issues}
+  \item \url{https://github.com/NewGraphEnvironment/breaks}
+  \item \url{https://www.newgraphenvironment.com/breaks/}
+  \item Report bugs at \url{https://github.com/NewGraphEnvironment/breaks/issues}
 }
 
 }

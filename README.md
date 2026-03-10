@@ -14,7 +14,7 @@ Given a stream network and an area of interest, breaks lets you place points on 
 
 ```r
 # install.packages("pak")
-pak::pak("NewGraphEnvironment/break")
+pak::pak("NewGraphEnvironment/breaks")
 ```
 
 ## Quick Start

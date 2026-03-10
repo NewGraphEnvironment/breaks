@@ -11,9 +11,9 @@ Description: Interactive Shiny app for clicking stream networks to place break
     pairwise subtraction. Built on the fresh package for FWA-referenced
     spatial hydrology queries.
 License: MIT + file LICENSE
-URL: https://github.com/NewGraphEnvironment/break,
-    https://www.newgraphenvironment.com/break/
-BugReports: https://github.com/NewGraphEnvironment/break/issues
+URL: https://github.com/NewGraphEnvironment/breaks,
+    https://www.newgraphenvironment.com/breaks/
+BugReports: https://github.com/NewGraphEnvironment/breaks/issues
 Depends:
     R (>= 4.1)
 Imports:
