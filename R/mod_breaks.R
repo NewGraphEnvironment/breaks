@@ -62,6 +62,7 @@ mod_breaks_server <- function(id, aoi, streams, breaks_rv, app_mode, map_click) 
         drm = result$downstream_route_measure[1],
         gnis_name = result$gnis_name[1] %||% "",
         dist_m = round(result$distance_to_stream[1], 1),
+        name_basin = "",
         stringsAsFactors = FALSE
       )
 
@@ -126,7 +127,6 @@ mod_breaks_server <- function(id, aoi, streams, breaks_rv, app_mode, map_click) 
 
       rm_id <- pts$id[nearest]
       breaks_rv$points <- pts[pts$id != rm_id, ]
-      breaks_rv$watersheds[[as.character(rm_id)]] <- NULL
       breaks_rv$subbasins <- NULL
 
       showNotification(paste0("Removed break #", rm_id), type = "message")
@@ -190,14 +190,12 @@ mod_breaks_server <- function(id, aoi, streams, breaks_rv, app_mode, map_click) 
       if (nrow(breaks_rv$points) == 0) return()
       last_id <- max(breaks_rv$points$id)
       breaks_rv$points <- breaks_rv$points[breaks_rv$points$id != last_id, ]
-      breaks_rv$watersheds[[as.character(last_id)]] <- NULL
       breaks_rv$subbasins <- NULL
     })
 
     # --- Clear all ---
     observeEvent(input$clear_all, {
       breaks_rv$points <- breaks_rv$points[0, ]
-      breaks_rv$watersheds <- list()
       breaks_rv$subbasins <- NULL
     })
 
@@ -208,95 +206,34 @@ mod_breaks_server <- function(id, aoi, streams, breaks_rv, app_mode, map_click) 
         return()
       }
 
-      breaks <- breaks_rv$points
+      # Build input for frs_watershed_split — lon/lat plus extra columns
+      pts <- breaks_rv$points
+      keep_cols <- c("lon", "lat", "name_basin",
+                     setdiff(names(pts),
+                             c("id", "lon", "lat", "blk", "drm",
+                               "gnis_name", "dist_m", "name_basin")))
+      pts_input <- pts[, keep_cols, drop = FALSE]
 
-      # Delineate watershed for each break point
-      withProgress(message = "Delineating watersheds...", value = 0, {
-        for (i in seq_len(nrow(breaks))) {
-          incProgress(1 / nrow(breaks),
-                      detail = paste("Point", i, "of", nrow(breaks)))
-          bid <- as.character(breaks$id[i])
-          if (!is.null(breaks_rv$watersheds[[bid]])) next
-
-          ws <- tryCatch(
-            fresh::frs_watershed_at_measure(breaks$blk[i], breaks$drm[i]),
-            error = function(e) {
-              showNotification(
-                paste0("Watershed failed for #", breaks$id[i], ": ", e$message),
-                type = "error"
-              )
-              NULL
-            }
-          )
-          if (!is.null(ws)) {
-            breaks_rv$watersheds[[bid]] <- sf::st_transform(ws, 4326)
-          }
-        }
-      })
-
-      # Pairwise subtraction
       withProgress(message = "Computing sub-basins...", {
-        ws_list <- breaks_rv$watersheds
-        valid_ids <- breaks$id[
-          sapply(as.character(breaks$id), function(x) !is.null(ws_list[[x]]))
-        ]
-        breaks_valid <- breaks[breaks$id %in% valid_ids, ]
-
-        if (nrow(breaks_valid) == 0) {
-          showNotification("No valid watersheds", type = "error")
-          return()
-        }
-
-        # Sort by area (largest = most downstream)
-        areas <- sapply(as.character(breaks_valid$id), function(x) {
-          as.numeric(sf::st_area(sf::st_transform(ws_list[[x]], 3005)))
-        })
-        breaks_valid <- breaks_valid[order(-areas), ]
-
-        subbasin_list <- list()
-        for (i in seq_len(nrow(breaks_valid))) {
-          bid <- as.character(breaks_valid$id[i])
-          poly <- ws_list[[bid]]
-
-          # Subtract all smaller (upstream) watersheds that intersect
-          if (i < nrow(breaks_valid)) {
-            for (j in (i + 1):nrow(breaks_valid)) {
-              ubid <- as.character(breaks_valid$id[j])
-              upstream_poly <- ws_list[[ubid]]
-              if (is.null(upstream_poly)) next
-              if (!sf::st_intersects(poly, upstream_poly, sparse = FALSE)[1, 1]) next
-
-              poly <- tryCatch({
-                d <- sf::st_difference(poly, upstream_poly)
-                if (any(sf::st_geometry_type(d) == "GEOMETRYCOLLECTION")) {
-                  d <- sf::st_collection_extract(d, "POLYGON")
-                }
-                if (nrow(d) > 0) {
-                  d_union <- sf::st_union(d)
-                  sf::st_sf(geometry = d_union)
-                } else {
-                  poly
-                }
-              }, error = function(e) poly)
-            }
+        result <- tryCatch(
+          fresh::frs_watershed_split(pts_input, aoi = aoi()),
+          error = function(e) {
+            showNotification(paste("Sub-basin computation failed:", e$message),
+                             type = "error")
+            NULL
           }
-
-          subbasin_list[[bid]] <- sf::st_sf(
-            break_id = breaks_valid$id[i],
-            blk = breaks_valid$blk[i],
-            drm = breaks_valid$drm[i],
-            gnis_name = breaks_valid$gnis_name[i],
-            geometry = sf::st_geometry(poly)
-          )
-        }
-
-        result <- do.call(rbind, subbasin_list)
-        sf::st_crs(result) <- 4326
-        breaks_rv$subbasins <- sf::st_cast(result, "MULTIPOLYGON")
+        )
       })
+
+      if (is.null(result) || nrow(result) == 0) {
+        showNotification("No sub-basins computed", type = "error")
+        return()
+      }
+
+      breaks_rv$subbasins <- result
 
       showNotification(
-        paste(nrow(breaks_rv$subbasins), "sub-basins computed"),
+        paste(nrow(result), "sub-basins computed"),
         type = "message"
       )
     })
@@ -305,15 +242,24 @@ mod_breaks_server <- function(id, aoi, streams, breaks_rv, app_mode, map_click) 
     output$points_table <- DT::renderDT({
       req(nrow(breaks_rv$points) > 0)
       breaks_rv$points
-    }, options = list(pageLength = 5, scrollX = TRUE), rownames = FALSE)
+    }, editable = list(
+      target = "cell",
+      disable = list(columns = which(names(breaks_rv$points) != "name_basin") - 1L)
+    ), options = list(pageLength = 5, scrollX = TRUE), rownames = FALSE)
+
+    # --- Update name_basin on cell edit ---
+    observeEvent(input$points_table_cell_edit, {
+      info <- input$points_table_cell_edit
+      # DT row/col are 1-indexed when rownames = FALSE
+      row_idx <- info$row
+      col_name <- names(breaks_rv$points)[info$col + 1L]
+      if (!identical(col_name, "name_basin")) return()
+      breaks_rv$points[row_idx, "name_basin"] <- info$value
+    })
 
     output$subbasins_table <- DT::renderDT({
       req(!is.null(breaks_rv$subbasins))
-      sb <- breaks_rv$subbasins
-      sb$area_km2 <- round(
-        as.numeric(sf::st_area(sf::st_transform(sb, 3005))) / 1e6, 1
-      )
-      sf::st_drop_geometry(sb)
+      sf::st_drop_geometry(breaks_rv$subbasins)
     }, options = list(pageLength = 5, scrollX = TRUE), rownames = FALSE)
   })
 }
