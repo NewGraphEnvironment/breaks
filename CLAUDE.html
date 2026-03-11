@@ -51,7 +51,7 @@
 <li>
 <strong><a href="https://github.com/NewGraphEnvironment/diggs" class="external-link">diggs</a></strong> — golem Shiny app pattern to follow (BC Historic Airphoto Explorer)</li>
 <li>
-<strong><a href="https://github.com/NewGraphEnvironment/fly" class="external-link">fly</a></strong> — sibling app pattern</li>
+<strong><a href="https://github.com/NewGraphEnvironment/fly" class="external-link">fly</a></strong> — estimate airphoto footprints and select optimal coverage for a study area</li>
 </ul><p>Pipeline: <code>fresh</code> (network data) → <code>breaks</code> (delineate sub-basins) → <code>flooded</code> (delineate floodplains) → <code>drift</code> (classify land cover)</p>
 </div>
 <div class="section level2">
@@ -64,7 +64,7 @@
   breaks-package.R   — package-level doc and imports
   mod_aoi.R          — AOI selection (3 methods: watershed group dropdown, click-to-delineate, upload gpkg/geojson)
   mod_map.R          — leaflet map, click handling, stream display
-  mod_breaks.R       — break point management, snap, delineate, pairwise subtraction
+  mod_breaks.R       — break point management, snap, editable name_basin, compute via fresh::frs_watershed_split()
   mod_export.R       — export controls (subbasins.gpkg + break_points.csv)
 data-raw/
   example_neexdzii.R — worked example: Neexdzii Kwa AOI + floodplain overlay
@@ -82,13 +82,12 @@ inst/
 <h3 id="break-point-workflow-mod_breaksr">Break point workflow (mod_breaks.R)<a class="anchor" aria-label="anchor" href="#break-point-workflow-mod_breaksr"></a></h3>
 <ol style="list-style-type: decimal"><li>Streams fetched within AOI via <code><a href="https://newgraphenvironment.github.io/fresh/reference/frs_stream_fetch.html" class="external-link">fresh::frs_stream_fetch()</a></code>
 </li>
-<li>User clicks streams to place break points</li>
-<li>Snap via <code><a href="https://newgraphenvironment.github.io/fresh/reference/frs_point_snap.html" class="external-link">fresh::frs_point_snap()</a></code>, delineate via <code><a href="https://newgraphenvironment.github.io/fresh/reference/frs_network.html" class="external-link">fresh::frs_network()</a></code>
+<li>User clicks streams to place break points (or uploads CSV with <code>lon</code>/<code>lat</code>)</li>
+<li>Each point snapped via <code><a href="https://newgraphenvironment.github.io/fresh/reference/frs_point_snap.html" class="external-link">fresh::frs_point_snap()</a></code>
 </li>
-<li>Compute sub-basins: largest-first sort → pairwise <code>st_difference</code>
-</li>
-<li>Export <code>subbasins.gpkg</code> + <code>break_points.csv</code>
-</li>
+<li>Editable <code>name_basin</code> column in DT table — only that column is editable</li>
+<li>Compute sub-basins via <code><a href="https://newgraphenvironment.github.io/fresh/reference/frs_watershed_split.html" class="external-link">fresh::frs_watershed_split()</a></code> (snap, delineate, sort, pairwise subtract, optional AOI clip)</li>
+<li>Export <code>subbasins.gpkg</code> + <code>break_points.csv</code> — <code>name_basin</code> and extra columns preserved</li>
 </ol></div>
 <div class="section level3">
 <h3 id="db-connection">DB connection<a class="anchor" aria-label="anchor" href="#db-connection"></a></h3>

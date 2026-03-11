@@ -85,9 +85,9 @@
 <li>Draw a polygon on the map</li>
 </ul>
 </li>
-<li><p><strong>Place break points</strong> — click streams to place points (or upload a CSV with <code>lon</code>/<code>lat</code> columns). Each point snaps to the nearest FWA stream segment.</p></li>
-<li><p><strong>Compute sub-basins</strong> — delineate the upstream watershed for each break point, then subtract upstream catchments from downstream ones (largest-first pairwise subtraction).</p></li>
-<li><p><strong>Export</strong> — download <code>break_points.csv</code> (all columns preserved) and <code>subbasins.gpkg</code> (EPSG:3005).</p></li>
+<li><p><strong>Place break points</strong> — click streams to place points (or upload a CSV with <code>lon</code>/<code>lat</code> columns). Each point snaps to the nearest FWA stream segment. Edit the <code>name_basin</code> column in the table to label each sub-basin.</p></li>
+<li><p><strong>Compute sub-basins</strong> — via <a href="https://github.com/NewGraphEnvironment/fresh" class="external-link"><code>fresh::frs_watershed_split()</code></a>: delineate, sort by area, pairwise subtract, optionally clip to AOI.</p></li>
+<li><p><strong>Export</strong> — download <code>break_points.csv</code> (all columns preserved including <code>name_basin</code>) and <code>subbasins.gpkg</code> (EPSG:3005).</p></li>
 </ol>
 </div>
 <div class="section level2">

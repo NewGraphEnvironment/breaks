@@ -24,8 +24,8 @@ watersheds, and exporting sub-basins via pairwise subtraction.
   change (downstream consumer of exported subbasins)
 - **[diggs](https://github.com/NewGraphEnvironment/diggs)** — golem
   Shiny app pattern to follow (BC Historic Airphoto Explorer)
-- **[fly](https://github.com/NewGraphEnvironment/fly)** — sibling app
-  pattern
+- **[fly](https://github.com/NewGraphEnvironment/fly)** — estimate
+  airphoto footprints and select optimal coverage for a study area
 
 Pipeline: `fresh` (network data) → `breaks` (delineate sub-basins) →
 `flooded` (delineate floodplains) → `drift` (classify land cover)
@@ -40,7 +40,7 @@ Pipeline: `fresh` (network data) → `breaks` (delineate sub-basins) →
       breaks-package.R   — package-level doc and imports
       mod_aoi.R          — AOI selection (3 methods: watershed group dropdown, click-to-delineate, upload gpkg/geojson)
       mod_map.R          — leaflet map, click handling, stream display
-      mod_breaks.R       — break point management, snap, delineate, pairwise subtraction
+      mod_breaks.R       — break point management, snap, editable name_basin, compute via fresh::frs_watershed_split()
       mod_export.R       — export controls (subbasins.gpkg + break_points.csv)
     data-raw/
       example_neexdzii.R — worked example: Neexdzii Kwa AOI + floodplain overlay
@@ -65,13 +65,17 @@ click basemap → snap via
 
 1.  Streams fetched within AOI via
     [`fresh::frs_stream_fetch()`](https://newgraphenvironment.github.io/fresh/reference/frs_stream_fetch.html)
-2.  User clicks streams to place break points
-3.  Snap via
-    [`fresh::frs_point_snap()`](https://newgraphenvironment.github.io/fresh/reference/frs_point_snap.html),
-    delineate via
-    [`fresh::frs_network()`](https://newgraphenvironment.github.io/fresh/reference/frs_network.html)
-4.  Compute sub-basins: largest-first sort → pairwise `st_difference`
-5.  Export `subbasins.gpkg` + `break_points.csv`
+2.  User clicks streams to place break points (or uploads CSV with
+    `lon`/`lat`)
+3.  Each point snapped via
+    [`fresh::frs_point_snap()`](https://newgraphenvironment.github.io/fresh/reference/frs_point_snap.html)
+4.  Editable `name_basin` column in DT table — only that column is
+    editable
+5.  Compute sub-basins via
+    [`fresh::frs_watershed_split()`](https://newgraphenvironment.github.io/fresh/reference/frs_watershed_split.html)
+    (snap, delineate, sort, pairwise subtract, optional AOI clip)
+6.  Export `subbasins.gpkg` + `break_points.csv` — `name_basin` and
+    extra columns preserved
 
 ### DB connection
 
