@@ -33,11 +33,11 @@ breaks::run_app()
    - Upload a GeoPackage or GeoJSON
    - Draw a polygon on the map
 
-2. **Place break points** — click streams to place points (or upload a CSV with `lon`/`lat` columns). Each point snaps to the nearest FWA stream segment.
+2. **Place break points** — click streams to place points (or upload a CSV with `lon`/`lat` columns). Each point snaps to the nearest FWA stream segment. Edit the `name_basin` column in the table to label each sub-basin.
 
-3. **Compute sub-basins** — delineate the upstream watershed for each break point, then subtract upstream catchments from downstream ones (largest-first pairwise subtraction).
+3. **Compute sub-basins** — via [`fresh::frs_watershed_split()`](https://github.com/NewGraphEnvironment/fresh): delineate, sort by area, pairwise subtract, optionally clip to AOI.
 
-4. **Export** — download `break_points.csv` (all columns preserved) and `subbasins.gpkg` (EPSG:3005).
+4. **Export** — download `break_points.csv` (all columns preserved including `name_basin`) and `subbasins.gpkg` (EPSG:3005).
 
 ## Requires
 

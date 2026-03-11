@@ -16,7 +16,7 @@ Interactive watershed break point delineation. golem-based Shiny app for clickin
 - **[flooded](https://github.com/NewGraphEnvironment/flooded)** — floodplain delineation (generates optional AOI overlays)
 - **[drift](https://github.com/NewGraphEnvironment/drift)** — land cover change (downstream consumer of exported subbasins)
 - **[diggs](https://github.com/NewGraphEnvironment/diggs)** — golem Shiny app pattern to follow (BC Historic Airphoto Explorer)
-- **[fly](https://github.com/NewGraphEnvironment/fly)** — sibling app pattern
+- **[fly](https://github.com/NewGraphEnvironment/fly)** — estimate airphoto footprints and select optimal coverage for a study area
 
 Pipeline: `fresh` (network data) → `breaks` (delineate sub-basins) → `flooded` (delineate floodplains) → `drift` (classify land cover)
 
@@ -31,7 +31,7 @@ R/
   breaks-package.R   — package-level doc and imports
   mod_aoi.R          — AOI selection (3 methods: watershed group dropdown, click-to-delineate, upload gpkg/geojson)
   mod_map.R          — leaflet map, click handling, stream display
-  mod_breaks.R       — break point management, snap, delineate, pairwise subtraction
+  mod_breaks.R       — break point management, snap, editable name_basin, compute via fresh::frs_watershed_split()
   mod_export.R       — export controls (subbasins.gpkg + break_points.csv)
 data-raw/
   example_neexdzii.R — worked example: Neexdzii Kwa AOI + floodplain overlay
@@ -50,10 +50,11 @@ Three methods all set a reactive `aoi()` polygon:
 
 ### Break point workflow (mod_breaks.R)
 1. Streams fetched within AOI via `fresh::frs_stream_fetch()`
-2. User clicks streams to place break points
-3. Snap via `fresh::frs_point_snap()`, delineate via `fresh::frs_network()`
-4. Compute sub-basins: largest-first sort → pairwise `st_difference`
-5. Export `subbasins.gpkg` + `break_points.csv`
+2. User clicks streams to place break points (or uploads CSV with `lon`/`lat`)
+3. Each point snapped via `fresh::frs_point_snap()`
+4. Editable `name_basin` column in DT table — only that column is editable
+5. Compute sub-basins via `fresh::frs_watershed_split()` (snap, delineate, sort, pairwise subtract, optional AOI clip)
+6. Export `subbasins.gpkg` + `break_points.csv` — `name_basin` and extra columns preserved
 
 ### DB connection
 All database access through `fresh::frs_db_conn()` using `PG_*_SHARE` env vars. No hand-rolled SQL in breaks.
