@@ -14,10 +14,9 @@ app_server <- function(input, output, session) {
     points = data.frame(
       id = integer(), lon = numeric(), lat = numeric(),
       blk = integer(), drm = numeric(), gnis_name = character(),
-      dist_m = numeric(),
+      dist_m = numeric(), name_basin = character(),
       stringsAsFactors = FALSE
     ),
-    watersheds = list(),
     subbasins = NULL
   )
   map_click <- reactiveVal(NULL)

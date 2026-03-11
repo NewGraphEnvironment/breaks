@@ -171,17 +171,19 @@ mod_map_server <- function(id, aoi, aoi_meta, streams, breaks_rv, map_click) {
       proxy |> leaflet::clearGroup("Sub-Basins")
       sb <- breaks_rv$subbasins
       if (!is.null(sb) && nrow(sb) > 0) {
-        pal <- leaflet::colorFactor("Set2", sb$break_id)
+        sb$label <- ifelse(nzchar(sb$name_basin), sb$name_basin, sb$gnis_name)
+        pal <- leaflet::colorFactor("Set2", sb$label)
         proxy |>
           leaflet::addPolygons(
             data = sb,
-            color = ~pal(break_id), weight = 2,
-            fillColor = ~pal(break_id), fillOpacity = 0.3,
+            color = ~pal(label), weight = 2,
+            fillColor = ~pal(label), fillOpacity = 0.3,
             popup = ~paste0(
-              "<b>Sub-basin #", break_id, "</b><br>",
-              gnis_name, "<br>",
+              "<b>", gnis_name, "</b><br>",
+              ifelse(nzchar(name_basin), paste0("Basin: ", name_basin, "<br>"), ""),
               "BLK: ", blk, "<br>",
-              "DRM: ", round(drm, 1)
+              "DRM: ", round(drm, 1), "<br>",
+              "Area: ", area_km2, " km\u00b2"
             ),
             group = "Sub-Basins"
           )
