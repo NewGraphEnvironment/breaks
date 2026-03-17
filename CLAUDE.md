@@ -57,7 +57,7 @@ Three methods all set a reactive `aoi()` polygon:
 6. Export `subbasins.gpkg` + `break_points.csv` — `name_basin` and extra columns preserved
 
 ### DB connection
-All database access through `fresh::frs_db_conn()` using `PG_*_SHARE` env vars. No hand-rolled SQL in breaks.
+Single shared connection created via `fresh::frs_db_conn()` in `app_server`, passed as `conn` to modules, disconnected on session end. All DB access uses `PG_*_SHARE` env vars. No hand-rolled SQL in breaks — all queries go through fresh's conn-first API.
 
 ### golem conventions (follow diggs pattern)
 - `DESCRIPTION` for package metadata and Imports
@@ -69,6 +69,7 @@ All database access through `fresh::frs_db_conn()` using `PG_*_SHARE` env vars. 
 ## Dependencies
 
 - fresh (FWA queries)
+- DBI (database connection management)
 - golem, shiny, bslib
 - leaflet (interactive map)
 - sf (spatial operations)
