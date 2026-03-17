@@ -91,7 +91,7 @@ inst/
 </ol></div>
 <div class="section level3">
 <h3 id="db-connection">DB connection<a class="anchor" aria-label="anchor" href="#db-connection"></a></h3>
-<p>All database access through <code><a href="https://newgraphenvironment.github.io/fresh/reference/frs_db_conn.html" class="external-link">fresh::frs_db_conn()</a></code> using <code>PG_*_SHARE</code> env vars. No hand-rolled SQL in breaks.</p>
+<p>Single shared connection created via <code><a href="https://newgraphenvironment.github.io/fresh/reference/frs_db_conn.html" class="external-link">fresh::frs_db_conn()</a></code> in <code>app_server</code>, passed as <code>conn</code> to modules, disconnected on session end. All DB access uses <code>PG_*_SHARE</code> env vars. No hand-rolled SQL in breaks — all queries go through fresh’s conn-first API.</p>
 </div>
 <div class="section level3">
 <h3 id="golem-conventions-follow-diggs-pattern">golem conventions (follow diggs pattern)<a class="anchor" aria-label="anchor" href="#golem-conventions-follow-diggs-pattern"></a></h3>
@@ -109,6 +109,7 @@ inst/
 <div class="section level2">
 <h2 id="dependencies">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies"></a></h2>
 <ul><li>fresh (FWA queries)</li>
+<li>DBI (database connection management)</li>
 <li>golem, shiny, bslib</li>
 <li>leaflet (interactive map)</li>
 <li>sf (spatial operations)</li>

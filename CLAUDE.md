@@ -79,9 +79,11 @@ click basemap → snap via
 
 ### DB connection
 
-All database access through
+Single shared connection created via
 [`fresh::frs_db_conn()`](https://newgraphenvironment.github.io/fresh/reference/frs_db_conn.html)
-using `PG_*_SHARE` env vars. No hand-rolled SQL in breaks.
+in `app_server`, passed as `conn` to modules, disconnected on session
+end. All DB access uses `PG_*_SHARE` env vars. No hand-rolled SQL in
+breaks — all queries go through fresh’s conn-first API.
 
 ### golem conventions (follow diggs pattern)
 
@@ -96,6 +98,7 @@ using `PG_*_SHARE` env vars. No hand-rolled SQL in breaks.
 ## Dependencies
 
 - fresh (FWA queries)
+- DBI (database connection management)
 - golem, shiny, bslib
 - leaflet (interactive map)
 - sf (spatial operations)
