@@ -6,10 +6,18 @@ mod_export_ui <- function(id) {
   ns <- NS(id)
   tagList(
     h4("Export"),
-    downloadButton(ns("dl_breaks"), "Break Points CSV",
-                   class = "btn-sm btn-outline-primary"),
-    downloadButton(ns("dl_subbasins"), "Sub-Basins GPKG",
-                   class = "btn-sm btn-outline-success")
+    tags$a(
+      id = ns("dl_breaks"),
+      class = "btn btn-sm btn-outline-primary shiny-download-link",
+      href = "", target = "_blank", download = NA,
+      icon("download"), "Break Points CSV"
+    ),
+    tags$a(
+      id = ns("dl_subbasins"),
+      class = "btn btn-sm btn-outline-success shiny-download-link",
+      href = "", target = "_blank", download = NA,
+      icon("download"), "Sub-Basins GPKG"
+    )
   )
 }
 

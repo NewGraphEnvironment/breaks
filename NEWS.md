@@ -5,6 +5,8 @@
 - Pass `name_basin` through to sub-basin output and map popups
 - Sub-basin popups now show area and basin name
 - Remove internal watershed cache (fresh handles delineation)
+- Migrate to fresh conn-first API — single shared DB connection per session (#10)
+- Fix download buttons not working inside bslib sidebar
 
 # breaks 0.2.0
 
