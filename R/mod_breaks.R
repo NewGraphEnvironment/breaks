@@ -41,7 +41,7 @@ mod_breaks_ui <- function(id) {
 #' @param app_mode ReactiveVal for app mode ("aoi" or "breaks")
 #' @param map_click ReactiveVal for map click events
 #' @noRd
-mod_breaks_server <- function(id, aoi, streams, breaks_rv, app_mode, map_click) {
+mod_breaks_server <- function(id, conn, aoi, streams, breaks_rv, app_mode, map_click) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -49,7 +49,7 @@ mod_breaks_server <- function(id, aoi, streams, breaks_rv, app_mode, map_click) 
 
     # --- Helper: snap a point and return a one-row data frame ---
     snap_point <- function(lon, lat, extra = NULL) {
-      result <- fresh::frs_point_snap(lon, lat)
+      result <- fresh::frs_point_snap(conn, lon, lat)
       if (is.null(result) || nrow(result) == 0) return(NULL)
 
       new_id <- if (nrow(breaks_rv$points) == 0) 1L else max(breaks_rv$points$id) + 1L
@@ -216,7 +216,7 @@ mod_breaks_server <- function(id, aoi, streams, breaks_rv, app_mode, map_click) 
 
       withProgress(message = "Computing sub-basins...", {
         result <- tryCatch(
-          fresh::frs_watershed_split(pts_input, aoi = aoi()),
+          fresh::frs_watershed_split(conn, pts_input, aoi = aoi()),
           error = function(e) {
             showNotification(paste("Sub-basin computation failed:", e$message),
                              type = "error")

@@ -25,7 +25,7 @@ mod_aoi_ui <- function(id) {
 #' @param app_mode ReactiveVal for app mode ("aoi" or "breaks")
 #' @param map_click ReactiveVal for map click events
 #' @noRd
-mod_aoi_server <- function(id, aoi, aoi_meta, app_mode, map_click) {
+mod_aoi_server <- function(id, conn, aoi, aoi_meta, app_mode, map_click) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -97,7 +97,7 @@ mod_aoi_server <- function(id, aoi, aoi_meta, app_mode, map_click) {
       req(app_mode() == "aoi")
       if (!is.null(wsg_lookup())) return()
       result <- tryCatch({
-        fresh::frs_db_query(
+        fresh::frs_db_query(conn,
           "SELECT DISTINCT watershed_group_code, watershed_group_name
            FROM whse_basemapping.fwa_watershed_groups_poly
            ORDER BY watershed_group_name"
@@ -132,7 +132,7 @@ mod_aoi_server <- function(id, aoi, aoi_meta, app_mode, map_click) {
           return()
         }
         result <- tryCatch(
-          fresh::frs_db_query(sprintf(
+          fresh::frs_db_query(conn, sprintf(
             "SELECT ST_Transform(geom, 4326) as geom
              FROM whse_basemapping.fwa_watershed_groups_poly
              WHERE watershed_group_code = '%s'",
@@ -174,7 +174,7 @@ mod_aoi_server <- function(id, aoi, aoi_meta, app_mode, map_click) {
       click <- click_coords()
       withProgress(message = "Snapping and delineating...", {
         snap <- tryCatch(
-          fresh::frs_point_snap(click$lng, click$lat),
+          fresh::frs_point_snap(conn, click$lng, click$lat),
           error = function(e) {
             showNotification(paste("Snap failed:", e$message), type = "error")
             NULL
@@ -185,7 +185,7 @@ mod_aoi_server <- function(id, aoi, aoi_meta, app_mode, map_click) {
           return()
         }
         ws <- tryCatch(
-          fresh::frs_watershed_at_measure(
+          fresh::frs_watershed_at_measure(conn,
             snap$blue_line_key[1],
             snap$downstream_route_measure[1]
           ),

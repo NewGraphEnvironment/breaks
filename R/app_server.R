@@ -4,6 +4,10 @@
 #' @import shiny
 #' @noRd
 app_server <- function(input, output, session) {
+  # Database connection — shared across all modules
+  conn <- fresh::frs_db_conn()
+  session$onSessionEnded(function() DBI::dbDisconnect(conn))
+
   # Shared reactive values
 
   app_mode <- reactiveVal("aoi")  # "aoi" or "breaks"
@@ -29,11 +33,11 @@ app_server <- function(input, output, session) {
   })
 
   # Wire modules
-  mod_aoi_server("aoi", aoi = aoi, aoi_meta = aoi_meta,
+  mod_aoi_server("aoi", conn = conn, aoi = aoi, aoi_meta = aoi_meta,
                  app_mode = app_mode, map_click = map_click)
   mod_map_server("map", aoi = aoi, aoi_meta = aoi_meta, streams = streams,
                  breaks_rv = breaks_rv, map_click = map_click)
-  mod_breaks_server("breaks", aoi = aoi, streams = streams,
+  mod_breaks_server("breaks", conn = conn, aoi = aoi, streams = streams,
                     breaks_rv = breaks_rv, app_mode = app_mode,
                     map_click = map_click)
   mod_export_server("export", breaks_rv = breaks_rv)
@@ -55,10 +59,10 @@ app_server <- function(input, output, session) {
     withProgress(message = "Fetching streams...", {
       result <- tryCatch({
         if (method == "wsg" && !is.null(meta$wsg_code)) {
-          fresh::frs_stream_fetch(watershed_group_code = meta$wsg_code)
+          fresh::frs_stream_fetch(conn, watershed_group_code = meta$wsg_code)
 
         } else if (method == "click" && !is.null(meta$blk) && !is.null(meta$drm)) {
-          fresh::frs_network(
+          fresh::frs_network(conn,
             blue_line_key = meta$blk,
             downstream_route_measure = meta$drm,
             direction = "upstream"
@@ -68,7 +72,7 @@ app_server <- function(input, output, session) {
           aoi_clean <- sf::st_zm(aoi(), drop = TRUE)
           aoi_3005 <- sf::st_transform(aoi_clean, 3005)
           bbox_3005 <- sf::st_bbox(aoi_3005)
-          fetched <- fresh::frs_stream_fetch(bbox = as.numeric(bbox_3005))
+          fetched <- fresh::frs_stream_fetch(conn, bbox = as.numeric(bbox_3005))
           fetched <- sf::st_zm(fetched, drop = TRUE)
           hits <- sf::st_intersects(fetched, aoi_3005, sparse = FALSE)[, 1]
           fetched[hits, ]
