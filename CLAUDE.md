@@ -1056,7 +1056,9 @@ next steps.
     before committing. Don’t mark a task done until the diff passes
     review.
 6.  **Archive when complete** — Move `planning/active/` to
-    `planning/archive/` via `/planning-archive`.
+    `planning/archive/` via `/planning-archive`. Write a README.md in
+    the archive directory with a one-paragraph outcome summary and
+    closing commit/PR ref — future sessions scan these to catch up fast.
 
 ## Atomic Commits (Critical)
 
