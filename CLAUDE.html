@@ -138,30 +138,6 @@ inst/
 </div>
 </div>
 <div class="section level1">
-<h1 id="agent-teams">Agent Teams<a class="anchor" aria-label="anchor" href="#agent-teams"></a></h1>
-<p>When to use Claude Code agent teams vs subagents, and key constraints.</p>
-<p><strong>Source:</strong> <a href="https://code.claude.com/docs/en/agent-teams" class="external-link">code.claude.com/docs/en/agent-teams</a></p>
-<div class="section level2">
-<h2 id="when-to-use-teams-vs-subagents">When to Use Teams (vs. Subagents)<a class="anchor" aria-label="anchor" href="#when-to-use-teams-vs-subagents"></a></h2>
-<p>Use agent teams when teammates need to <strong>talk to each other</strong> — research debates, competing hypotheses, cross-layer coordination. Use subagents when you just need focused workers that report back results.</p>
-<p><strong>Good fit:</strong> parallel code review, investigating competing bug hypotheses, new modules that don’t share files, research from multiple angles.</p>
-<p><strong>Bad fit:</strong> sequential tasks, edits to the same file, simple work where coordination overhead exceeds benefit.</p>
-</div>
-<div class="section level2">
-<h2 id="key-rules">Key Rules<a class="anchor" aria-label="anchor" href="#key-rules"></a></h2>
-<ul><li>
-<strong>Give enough context in the spawn prompt</strong> — teammates don’t inherit the lead’s conversation history</li>
-<li>
-<strong>Ensure teammates own different files</strong> — two teammates editing the same file leads to overwrites</li>
-<li>
-<strong>Shut down all teammates before cleanup</strong> — cleanup fails if teammates are still running</li>
-<li>
-<strong>Always clean up via the lead</strong> — teammates should never run cleanup</li>
-<li>
-<strong>No session resumption</strong> — after <code>/resume</code>, spawn new teammates</li>
-</ul></div>
-</div>
-<div class="section level1">
 <h1 id="bookdown-conventions">Bookdown Conventions<a class="anchor" aria-label="anchor" href="#bookdown-conventions"></a></h1>
 <p>Standards for bookdown report projects across New Graph Environment.</p>
 <div class="section level2">
@@ -443,7 +419,7 @@ inst/
 <td>Field work, Mergin Maps</td>
 </tr></tbody></table></div>
 <div class="section level2">
-<h2 id="key-rules-1">Key Rules<a class="anchor" aria-label="anchor" href="#key-rules-1"></a></h2>
+<h2 id="key-rules">Key Rules<a class="anchor" aria-label="anchor" href="#key-rules"></a></h2>
 <ul><li>
 <strong><code>sf_use_s2(FALSE)</code></strong> at top of every mapping script</li>
 <li>
