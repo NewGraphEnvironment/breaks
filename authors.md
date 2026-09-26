@@ -3,6 +3,7 @@
 ## Authors
 
 - **Al Irvine**. Author, maintainer.
+  [](https://orcid.org/0000-0002-3495-2128)
 
 - **New Graph Environment Ltd.**. Copyright holder.
 
