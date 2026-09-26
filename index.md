@@ -18,6 +18,7 @@ Kwah watershed](reference/figures/screenshot.png)
 ## Install
 
 ``` r
+
 # install.packages("pak")
 pak::pak("NewGraphEnvironment/breaks")
 ```
@@ -25,6 +26,7 @@ pak::pak("NewGraphEnvironment/breaks")
 ## Quick Start
 
 ``` r
+
 # Requires PostgreSQL with fwapg (via fresh)
 # Set PG_*_SHARE env vars for database connection
 breaks::run_app()
@@ -62,14 +64,14 @@ breaks::run_app()
 
 breaks is one piece of a larger watershed analysis workflow:
 
-| Package                                                   | Role                                                                                                             |
-|-----------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
-| [fresh](https://github.com/NewGraphEnvironment/fresh)     | FWA-referenced spatial hydrology (data layer)                                                                    |
-| **breaks**                                                | Delineate sub-basins from break points on stream networks                                                        |
-| [flooded](https://github.com/NewGraphEnvironment/flooded) | Delineate floodplain extents from DEMs and stream networks                                                       |
-| [drift](https://github.com/NewGraphEnvironment/drift)     | Track land cover change within floodplains over time                                                             |
-| [fly](https://github.com/NewGraphEnvironment/fly)         | Estimate airphoto footprints and select optimal coverage for a study area                                        |
-| [diggs](https://github.com/NewGraphEnvironment/diggs)     | Interactive explorer for [fly](https://github.com/NewGraphEnvironment/fly) airphoto selections (golem Shiny app) |
+| Package | Role |
+|----|----|
+| [fresh](https://github.com/NewGraphEnvironment/fresh) | FWA-referenced spatial hydrology (data layer) |
+| **breaks** | Delineate sub-basins from break points on stream networks |
+| [flooded](https://github.com/NewGraphEnvironment/flooded) | Delineate floodplain extents from DEMs and stream networks |
+| [drift](https://github.com/NewGraphEnvironment/drift) | Track land cover change within floodplains over time |
+| [fly](https://github.com/NewGraphEnvironment/fly) | Estimate airphoto footprints and select optimal coverage for a study area |
+| [diggs](https://github.com/NewGraphEnvironment/diggs) | Interactive explorer for [fly](https://github.com/NewGraphEnvironment/fly) airphoto selections (golem Shiny app) |
 
 Pipeline: fresh (network data) → breaks (sub-basins) → flooded
 (floodplains) → drift (land cover change).
