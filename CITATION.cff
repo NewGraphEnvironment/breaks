@@ -14,15 +14,33 @@ abstract: Interactive Shiny app for clicking stream networks to place break poin
   Built on the fresh package for FWA-referenced spatial hydrology queries.
 authors:
 - family-names: Irvine
-  given-names: Al
+  given-names: Allan
   email: al@newgraphenvironment.com
   orcid: https://orcid.org/0000-0002-3495-2128
+  affiliation: New Graph Environment Ltd.
+preferred-citation:
+  title: 'breaks: Interactive Watershed Break Point Delineation'
+  authors:
+  - family-names: Irvine
+    given-names: Allan
+    email: al@newgraphenvironment.com
+    orcid: https://orcid.org/0000-0002-3495-2128
+    affiliation: New Graph Environment Ltd.
+  version: 0.3.0
+  date-released: '2026-03-11'
+  url: https://www.newgraphenvironment.com/breaks/
+  repository-code: https://github.com/NewGraphEnvironment/breaks
+  license: MIT
+  type: software
+  publisher:
+    name: New Graph Environment Ltd.
 repository-code: https://github.com/NewGraphEnvironment/breaks
 url: https://www.newgraphenvironment.com/breaks/
 date-released: '2026-03-11'
 contact:
 - family-names: Irvine
-  given-names: Al
+  given-names: Allan
   email: al@newgraphenvironment.com
   orcid: https://orcid.org/0000-0002-3495-2128
+  affiliation: New Graph Environment Ltd.
 
