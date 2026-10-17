@@ -14,15 +14,15 @@ Source:
 [`inst/CITATION`](https://github.com/NewGraphEnvironment/breaks/blob/main/inst/CITATION)
 
 Irvine A (2026). *breaks: Interactive Watershed Break Point
-Delineation*. New Graph Environment Ltd. R package version 0.3.0,
+Delineation*. New Graph Environment Ltd. Version 0.3.0,
 <https://github.com/NewGraphEnvironment/breaks>.
 
-    @Manual{,
+    @Manual{breaks,
       title = {breaks: Interactive Watershed Break Point Delineation},
       author = {Allan Irvine},
       organization = {New Graph Environment Ltd.},
       year = {2026},
       version = {0.3.0},
-      note = {R package version 0.3.0},
+      note = {Version 0.3.0},
       url = {https://github.com/NewGraphEnvironment/breaks},
     }
