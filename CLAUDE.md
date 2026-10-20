@@ -78,7 +78,7 @@ Single shared connection created via `fresh::frs_db_conn()` in `app_server`, pas
 ## Requires
 
 - PostgreSQL with fwapg (via fresh)
-- SSH tunnel or direct connection
+- Network access to that database (direct, or through a forwarded port)
 - `PG_*_SHARE` env vars configured
 
 ## Reference Files
