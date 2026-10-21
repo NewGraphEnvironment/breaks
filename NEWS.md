@@ -1,3 +1,11 @@
+# breaks 0.3.1
+
+No change to the package's functions. This release exists so the package has a citable, archived version.
+
+- **Citation.** The maintainer is the author, and New Graph Environment Ltd. the copyright holder and funder (`cph`, `fnd` in `Authors@R`) and the publisher in `CITATION.cff`. `citation("breaks")` and `knitr::write_bib()` give the entry the stable key `breaks`.
+- `CITATION.cff` is regenerated from DESCRIPTION by the `update-citation-cff` workflow and is kept out of the build tarball.
+- The build excludes a git worktree's `.git` file.
+
 # breaks 0.3.0
 
 - Add editable `name_basin` column to break points table (#5)
