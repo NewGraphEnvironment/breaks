@@ -4,11 +4,12 @@
 # ------------------------------------------------
  
 cff-version: 1.2.0
-message: 'To cite package "breaks" in publications use:'
+message: If you use breaks, please cite it by its DOI, 10.5281/zenodo.23524740.
 type: software
 license: MIT
 title: 'breaks: Interactive Watershed Break Point Delineation'
 version: 0.3.1
+doi: 10.5281/zenodo.23524740
 abstract: Interactive Shiny app for clicking stream networks to place break points,
   delineating upstream watersheds, and exporting sub-basins via pairwise subtraction.
   Built on the fresh package for FWA-referenced spatial hydrology queries.
@@ -31,6 +32,7 @@ preferred-citation:
   url: https://www.newgraphenvironment.com/breaks/
   repository-code: https://github.com/NewGraphEnvironment/breaks
   license: MIT
+  doi: 10.5281/zenodo.23524740
   type: software
   publisher:
     name: New Graph Environment Ltd.
