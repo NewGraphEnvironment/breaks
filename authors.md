@@ -14,7 +14,7 @@ Source:
 [`inst/CITATION`](https://github.com/NewGraphEnvironment/breaks/blob/main/inst/CITATION)
 
 Irvine A (2026). *breaks: Interactive Watershed Break Point
-Delineation*. New Graph Environment Ltd. Version 0.3.0,
+Delineation*. New Graph Environment Ltd. Version 0.3.1,
 <https://github.com/NewGraphEnvironment/breaks>.
 
     @Manual{breaks,
@@ -22,7 +22,7 @@ Delineation*. New Graph Environment Ltd. Version 0.3.0,
       author = {Allan Irvine},
       organization = {New Graph Environment Ltd.},
       year = {2026},
-      version = {0.3.0},
-      note = {Version 0.3.0},
+      version = {0.3.1},
+      note = {Version 0.3.1},
       url = {https://github.com/NewGraphEnvironment/breaks},
     }
