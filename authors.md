@@ -11,11 +11,12 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/NewGraphEnvironment/breaks/blob/v0.3.1/inst/CITATION)
+[`inst/CITATION`](https://github.com/NewGraphEnvironment/breaks/blob/main/inst/CITATION)
 
 Irvine A (2026). *breaks: Interactive Watershed Break Point
-Delineation*. New Graph Environment Ltd. Version 0.3.1,
-<https://github.com/NewGraphEnvironment/breaks>.
+Delineation*. New Graph Environment Ltd.
+[doi:10.5281/zenodo.23524740](https://doi.org/10.5281/zenodo.23524740).
+Version 0.3.1, <https://github.com/NewGraphEnvironment/breaks>.
 
     @Manual{breaks,
       title = {breaks: Interactive Watershed Break Point Delineation},
@@ -25,4 +26,5 @@ Delineation*. New Graph Environment Ltd. Version 0.3.1,
       version = {0.3.1},
       note = {Version 0.3.1},
       url = {https://github.com/NewGraphEnvironment/breaks},
+      doi = {10.5281/zenodo.23524740},
     }
