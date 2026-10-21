@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/NewGraphEnvironment/breaks/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/NewGraphEnvironment/breaks/blob/v0.3.1/inst/CITATION)
 
 Irvine A (2026). *breaks: Interactive Watershed Break Point
 Delineation*. New Graph Environment Ltd. Version 0.3.1,
