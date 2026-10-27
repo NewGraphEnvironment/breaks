@@ -2,7 +2,7 @@ pandoc: 3.8.3
 pkgdown: 2.2.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2026-10-26T23:59Z
+last_built: 2026-10-27T22:55Z
 urls:
   reference: https://www.newgraphenvironment.com/breaks/reference
   article: https://www.newgraphenvironment.com/breaks/articles
