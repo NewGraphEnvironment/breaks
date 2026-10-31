@@ -96,8 +96,7 @@ Single shared connection created via `fresh::frs_db_conn()` in `app_server`, pas
 # Agent Operating Rules
 
 How an agent session works here: clocks and waiting, subagents, evidence, and when to come
-back to the user. Sections 5–8 of `karpathy.md` until 2026-10-11. Worked commands
-and background, under the same headings, are in
+back to the user. Worked commands and background, under the same headings, are in
 soul's `conventions/reference/agent-operations.md`, which no `CLAUDE.md` loads.
 
 Citations sit in `<!-- evidence -->` blocks, which a repo's `CLAUDE.md` omits; the full text
@@ -519,22 +518,49 @@ default: pick it, say so, move on.
 Never post to a venue outside NGE's own repositories without the user's explicit
 approval for that specific post — upstream GitHub issues and PR comments, mailing
 lists, forums, third-party trackers. **Drafting is welcome and expected**: write the
-comment, show it, wait. It is the sending that needs the word, because an upstream comment
-is published under the organisation's name, is indexed immediately, and cannot be
-unpublished.
+comment, show it, wait. The sending needs the word: an upstream comment is published under
+our name, indexed at once, and cannot be unpublished.
 
 - Our own repos are unaffected; filing and editing issues there needs no asking.
 - **Reading upstream is unrestricted and worth doing.**
-- Offer the draft in the reply, and say plainly that nothing has been posted when the work
-  obviously produced something postable.
+- Offer the draft in the reply, and say plainly that nothing has been posted.
 
 *4 lines of evidence for this rule are in `conventions/agent-operations.md`.*
 
-### An upstream PR is short, carries no session link, and needs no issue of its own
+### Upstream, we are guests: fork first, offer an issue, disclose AI
 
-Write it for a maintainer who knows the code (about 200 words: bug, repro, change, test table), and keep "Generated with Claude Code" but drop the session link and the commits' `Claude-Session:` trailers, which outsiders cannot open. File no upstream issue beside it: when we have the fix, the PR is the upstream report, and our own issue links it. Leave out the SRED cross-reference too. Posting it still needs the user's word (above).
+We build on other people's work: gratitude and humility in every step that touches it.
+Maintainers may read anything we write about their code, so describe what we saw rather than
+diagnose their design, offer rather than propose, and leave them every road to lead.
 
-*5 lines of evidence for this rule are in `conventions/agent-operations.md`.*
+- **Fix on our fork the same day,** one concern per branch from upstream's default branch,
+  no planning files and no `#N` in its commits, the draft in a fork issue labelled
+  `upstream-draft`. Pin our packages to the fork's integration branch until upstream holds
+  every fix on it, their way.
+- **Upstream gets a short issue that offers:** thanks, a reprex, the options as we see them,
+  and a pull request if it helps. Send one when asked, or first only where outside pull
+  requests are routinely merged. One open item per maintainer, timed around their load.
+- **About 200 words, no SRED line.** A design change goes in as a question.
+- **Say plainly that Claude Code helped,** in a sentence from the `upstream-draft` on, and offer
+  an `Assisted-by` reword in the pull request. Where AI-assisted contributions are unwelcome,
+  send no code.
+- **Never ping by accident:** in our repos' issues and pull requests an upstream item is
+  backticked, never a URL, link or bare `#N` (a fork's reached upstream's once), unless the user
+  wants the ping; commit messages name none, even backticked. An edit cannot take a ping
+  back. In a fork checkout `gh` targets upstream, so pass `--repo` for our fork.
+- **Homework before, notes after:** who contributes, stated policy, AI use, current load,
+  response pace, kept in soul's `research/upstream-projects.md`, revised after every reply,
+  merge or silence.
+- Raise upstream only what would help their other users. If a maintainer would rather not
+  hear from us, keep the fork or move on.
+
+*32 lines of evidence for this rule are in `conventions/agent-operations.md`.*
+
+### Credit Claude, link no session
+
+Nothing we write carries a session link. In our repos, commits end with `Co-Authored-By`, PR
+bodies with "Generated with Claude Code", and issues with no Claude line bar an
+`upstream-draft`'s sentence.
 
 ### Auto mode refuses a production write whatever the chat says
 
@@ -546,9 +572,18 @@ bare command themselves (below). Do not retry, and do not suggest a restart.
 
 It is not the secret-read clamp (`newgraph.md`, "Reading a secret clamps the rest of the
 session"), which names *earlier conversation content* and needs a restart. This refusal
-names a **category** of action, such as "Production Deploy".
+names a **category** of action, such as "Production Deploy" — and the category need not
+describe a deploy: a plain `git push` of local commits has been refused as "Excess
+Sensitive Detail". In a cloud session "External System Writes" covers a `gh api -X POST`
+issue comment; the `mcp__github__*` write tool makes the same write unprompted.
 
-*10 lines of evidence for this rule are in `conventions/agent-operations.md`.*
+**It classifies the command text, so it also fires on a write the file tools can make
+safely.** Where what was refused is an edit to a tracked file rather than the publish
+itself, take that route first — Read and Edit, which the denial text offers as a safer
+method — and say the classification was wrong. Keep the two routes above for the command
+that really does publish.
+
+*23 lines of evidence for this rule are in `conventions/agent-operations.md`.*
 
 ### Hand the user bare commands
 
@@ -573,21 +608,31 @@ paths. Full Disk Access for the terminal app removes the block.
 
 *13 lines of evidence for this rule are in `conventions/agent-operations.md`.*
 
+### Read a name for what it sounds like: the user dictates
+
+Messages often arrive by voice, so names come spelled by sound ("maxxam creek" was Maxan
+Creek). Resolve a place name against BC Geographic Names or the Freshwater Atlas before it
+lands in an issue, code or a query, and read an odd phrase for the word it sounds like
+before asking about it.
+
 ### Link every issue and PR you name to the user
 
 When a message to the user names an issue or a PR, make the number a link the user can
 click: `[repo#12](https://github.com/<owner>/<repo>/issues/12)`,
 `[repo PR #13](https://github.com/<owner>/<repo>/pull/13)`.
 
+- **Say what each one is** in a few words, unless its sentence already does: a list of bare
+  links fails this. A `Stop` hook, `settings/hooks/reply_links-check.py`, holds a reply that
+  breaks either half; its no-context check is a heuristic, so a reply it misjudges may stand.
 - Issues under `/issues/N`, pull requests under `/pull/N`; when unsure, ask `gh` for the URL.
 - **Cross-repo references carry the repo** (`other#12`): a bare `#N` is a working link to the
   wrong repo, and naming the collision in prose afterwards does not fix it; re-qualify the link.
 - Before sending a report with many numbers, spot-check two or three through `gh`: the ones
   typed from memory or whose type you inferred.
 - Scope is messages to the user, and PR and issue bodies read from outside the repo; commit
-  messages autolink already.
+  messages autolink already. An upstream item in our repos' GitHub text is backticked (§4, pings).
 
-*7 lines of evidence for this rule are in `conventions/agent-operations.md`.*
+*11 lines of evidence for this rule are in `conventions/agent-operations.md`.*
 
 ### Surface upstream defects; do not work around them
 
@@ -598,7 +643,7 @@ every other consumer. Same instinct as `newgraph.md`'s "install missing packages
 workaround", applied to a *broken* dependency.
 
 **How to apply:** reproduce it minimally, file an issue in the owning repo with the
-repro and the exact lines, report it, and carry on if it is not blocking. The rule is
+repro and the exact lines (a third party's: a fork issue first, above), report it, and carry on if it is not blocking. The rule is
 *do not hide it*, not *do not continue*.
 
 *10 lines of evidence for this rule are in `conventions/agent-operations.md`.*
@@ -657,8 +702,9 @@ Install: `pak::pak("NewGraphEnvironment/gq")`
 - **Google imagery is a link, never an embed beside our map** — Google Maps Platform terms §3.2.3(e) bar using its services "with or near a non-Google Map", so no Google panel beside an Esri or Sentinel one, key or not. Link per feature instead (template in the `cartography` skill), as an undated look: Google Maps does not date its imagery
 - **A maptiles custom provider URL ends in `.jpg`** — in maptiles 0.11.0, `create_provider()` with an extensionless tile URL fails at `get_tiles()` with `cannot coerce type 'closure' to vector of type 'character'`; `.../MapServer/tile/{z}/{y}/{x}.jpg`, the form its built-in Esri providers use, works and Esri serves the same tiles
 - **Ask Wayback, not the map, for newer Esri imagery** — call `dft_wayback_captures(zoom = z)` once per zoom, 10 to 22, and compare: one call keeps one zoom per feature
+- **Give a web map hex colours, never R colour names** — `grey80` draws in tmap and ggplot2, but MapLibre (mapgl) cannot parse it and drops the whole layer: the console's first error is `Could not parse color from value 'grey80'`, then `Cannot style non-existing layer` when a control touches it. Convert with `m <- grDevices::col2rgb(x, alpha = TRUE); grDevices::rgb(t(m[1:3, ]), alpha = m[4, ], maxColorValue = 255)` or hard-code hex, and check for `NA` before converting: it comes back `#FFFFFF00`, a layer drawn transparent rather than an error
 
-*5 lines of evidence for this rule are in `conventions/cartography.md`.*
+*11 lines of evidence for this rule are in `conventions/cartography.md`.*
 
 ## Self-Review (after every render)
 
@@ -735,35 +781,22 @@ drift::dft_map_interactive(classified, aoi = aoi)
 
 # CI Monitoring
 
-When this repo has GitHub Actions workflows, scan recent runs on session start. Catches failed pkgdown deploys, broken vignette builds, and stale citation regenerations that would otherwise linger until the user manually checks.
+When this repo has GitHub Actions workflows, scan recent runs on session start, so a failed deploy, vignette build or citation update does not linger until someone notices.
 
 ## On Session Start
 
 ```bash
 gh run list --limit 5 --json status,conclusion,name,createdAt,databaseId \
-  --jq '.[] | select(.conclusion == "failure")'
+  --jq '.[] | select(.conclusion == "failure" or .conclusion == "cancelled")'
 ```
+
+Keep a `cancelled` row only if its annotations report a timeout ("A timed-out run reads `cancelled`"); say timed out, not failed.
 
 If any failures since the last visit, surface to the user before starting other work:
 
 > Workflow `<name>` failed `<time>` ago (run `<id>`). Investigate with `gh run view <id> --log-failed`. Fix or proceed with current task?
 
-User decides; do not auto-fix.
-
-## Particular Failures Worth Naming
-
-- **pkgdown** — docs site on GitHub Pages broken
-- **R-CMD-check** — package may not install
-- **Vignette / build-vignettes** — vignette docs incomplete
-- **update-citation-cff** — CITATION.cff stale
-
-## Why This Matters
-
-Without this scan, post-merge workflow failures linger until someone (often the user) notices a stale docs site or a missing vignette. The session-start sweep catches them on the first re-entry into the repo.
-
-## Pairs with `/gh-pr-merge`
-
-The skill watches workflows triggered by a fresh merge in real time — that's the targeted catch. This convention is the backstop for failures that landed when no one was watching (merges via web UI, scheduled triggers, manually-triggered workflows).
+User decides; do not auto-fix. `/gh-pr-merge` watches a fresh merge's runs; this scan is the backstop for failures nobody watched (web-UI merges, schedules, dispatches).
 
 ## A green run does not mean the site is current
 
@@ -772,20 +805,22 @@ directly when it matters — the deploy commit, not the run status:
 
 ```bash
 git fetch -q origin gh-pages && git log -1 --format='%s' FETCH_HEAD
-# "Deploying to gh-pages from @ owner/repo@<sha> 🚀"  <- the last NON-BOT commit? A bot commit never deploys
+# "Deploying to gh-pages from @ owner/repo@<sha> 🚀"  <- the last commit that started a run?
 ```
 
+Compare it with the last commit that started a run, not with the tip: a bot commit and a
+housekeeping push tagged `[skip ci]` start none, so a site built from the commit below them
+is current when they touch nothing the site publishes.
+
 GitHub can create a workflow run minutes after the push that triggered it, and
-out of order with a later push. Observed 2026-08-26 in `fly`: `7a7700c` built and
-deployed at 17:21, then its own *parent* `be77eca` had its run created at 17:22:52
-— twelve minutes after that push — and deployed over it. Both runs green, `gh run
-list` all success, published site one commit stale.
+out of order with a later push, so a parent commit's run can deploy over its child's with
+both runs green and the published site one commit stale.
 
 Things that do **not** fix this, so don't reach for them:
 
-- `cancel-in-progress: true` — cancels an *overlapping* run. Here the runs never
-  overlapped (`created == started` on both, second created after first finished),
-  so there was nothing to cancel.
+- `cancel-in-progress: true` — cancels an *overlapping* run. In the measured case the
+  runs never overlapped (`created == started` on both, second created after first
+  finished), so there was nothing to cancel.
 - A `concurrency:` group — the r-lib pkgdown template already sets one at the job
   level (`group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}`).
   Grepping for a top-level `concurrency:` key misses it and invites a redundant
@@ -797,7 +832,7 @@ exists. The remedy is detection: check the deploy provenance, and re-dispatch
 commit changed nothing the site publishes — confirm via `.Rbuildignore` / `_pkgdown.yml`
 rather than assuming.
 
-*2 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
+*5 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
 
 ## Don't push to the default branch between a merge and its CI settling
 
@@ -808,18 +843,20 @@ the same in the status column, so a routine follow-up push turns a green merge i
 something the next person has to go read a log about — and the log does not exist.
 
 The routine follow-up is the one that bites, because it is the one nobody counts as a
-push: a `CLAUDE.md` drift sync, a typo fix, a `.gitignore` line. `/compact-prep` step 6
-runs `claude_md_drift.sh apply`, which **pushes**, and after `/gh-pr-merge` that lands
-seconds after the merge.
+push: a typo fix, a `.gitignore` line, an untagged `CLAUDE.md` drift sync. `/compact-prep`
+step 6 runs `claude_md_drift.sh apply`, which **pushes**, and after `/gh-pr-merge` that
+lands seconds after the merge. A housekeeping push carries `[skip ci]`, starts no run and
+cancels nothing only where soul's `ci_skip.sh` admits it: every commit touches only
+`CLAUDE.md`, `comms/`, `planning/`, `research/` or `.claude/`, in an R package whose shape
+it admits. Anywhere else the sync pushes untagged, and this rule holds.
 
-Order them: watch the merge's runs to completion, *then* push anything else. Measured
-2026-09-08 in gq — the merge's pkgdown and R-CMD-check were allowed to finish green and
-the deploy provenance checked before the sync went out, and the sync's own runs then went
-green on their own SHA. Holding it cost about three minutes.
+Order them: watch the merge's runs to completion, *then* push anything else.
 
 Where a push has already gone out and cancelled something, `/gh-pr-merge` step 10 has the
-reading: `cancelled`/`skipped` is `⊘ superseded`, not `✗ failed`, and the thing to confirm
-is that the newest **non-bot** SHA's run passed. Do not re-dispatch the cancelled one.
+reading: `cancelled`/`skipped` is `⊘ superseded` unless its annotation reports a timeout, and the thing to confirm
+is that the newest SHA that started a run passed. Do not re-dispatch the cancelled one.
+
+*3 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
 
 ## Don't use `gh run watch` to wait
 
@@ -840,10 +877,8 @@ download of package 'pak' failed
 Error in loadNamespace(x) : there is no package called 'pak'
 ```
 
-That is `setup-r-dependencies` failing before the package was ever built. Seen
-2026-09-02 on a tagged spacehakr release, where the same workflow had passed on the merge
-commit minutes earlier with identical content — the natural but wrong reading is "the
-release is broken".
+That is `setup-r-dependencies` failing before the package was ever built. On a release
+commit the natural but wrong reading is "the release is broken".
 
 **Read which step failed before drawing a conclusion**, especially on a release commit
 where the instinct is to distrust the tag:
@@ -856,15 +891,25 @@ If it died in dependency setup, rerun once. If it dies the same way again it is 
 upstream CDN, and the honest move is to say so and stop — not to keep spending runs on
 something no change in the repo can fix.
 
-## A citation run failing "fetch first" beside a green twin lost a push race
-Before reading a red `Update CITATION.cff` as a broken release, find a green run of it on the same or a later SHA (not earlier), then confirm `git show origin/main:CITATION.cff` carries the released version and date.
+A job that failed with **no steps** never started, and `--log-failed` answers `log not found`.
+Read why from its check run's annotations, `gh api repos/<owner>/<repo>/check-runs/<job id>/annotations
+--jq '.[].message'`: a refusal for failed payments or a spending limit is the account owner's to fix, and a
+re-run before they fix it is refused the same way.
+
+*6 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
+
+## A timed-out run reads `cancelled`
+Read a `cancelled` run's annotations before calling it superseded: its job ids from `gh run view <id> --json jobs --jq '.jobs[].databaseId'`, then `gh api repos/<o>/<r>/check-runs/<job id>/annotations`. A timeout says "The job has exceeded the maximum execution time", and its `--log-failed` is empty.
 
 *5 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
 
-## A hung setup step holds the concurrency group for six hours
-A run `in_progress` long past its usual duration, with a newer run of it `pending` behind, is a hang: confirm no step moved (`gh run view <id> --json jobs`), then `gh run cancel <id>`; the lasting fix is `timeout-minutes:`.
+## R workflows live in NewGraphEnvironment/flows
+Change a runner, timeout or step there and fast-forward `v1`; a workflow marked at its top as its own is changed in its repo. Re-run all jobs: re-run failed reuses the old copy.
 
-*4 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
+## A hung setup step holds the concurrency group for six hours
+A run `in_progress` long past its usual duration, with a newer run of it `pending` behind, is a hang: confirm no step moved (`gh run view <id> --json jobs`), then `gh run cancel <id>`; the lasting fix is `timeout-minutes:`. A slow `setup-r-dependencies` may be compiling (`ℹ Building <pkg>`, in the web UI while it runs); sources on `cran.rstudio.com` mean `code-check-r.md`, "pak Behavior".
+
+*9 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
 
 ## A job-level `concurrency` group must vary with the matrix, or the jobs cancel each other
 
@@ -890,22 +935,10 @@ which `/gh-pr-merge` step 10 correctly reads as `⊘ superseded` — so two plat
 never ran look like two platforms that were superseded by a newer push. Nothing is red and
 nothing says the coverage was lost.
 
-The decisive evidence is GitHub's own context-availability table: `matrix` is listed for
-`jobs.<job_id>.concurrency` and **not** for the top-level `concurrency`. If it were not
-evaluated per job, the context could not be in scope there.
-
-```bash
-curl -s https://raw.githubusercontent.com/github/docs/main/content/actions/reference/workflows-and-actions/contexts.md \
-  | grep 'concurrency'
-```
-
-Cheapest confirmation on a live workflow: the first run's job list. Three jobs
-`in_progress` at once is the pass; one running while two read `cancelled` is this.
-
 The entries above concern cancellation **between pushes**, which is the behaviour you
 want. This is cancellation **within one push**, which is never what you want.
 
-*4 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
+*10 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
 
 
 ## A push `paths:` filter skips an empty commit, and dispatch and schedule run only from the default branch
@@ -930,6 +963,13 @@ Before telling anyone a Pages URL is live, fetch it and compare the bytes with t
 
 *1 line of evidence for this rule is in `conventions/ci-monitoring.md`.*
 
+## `gh run list --commit` needs the full SHA, and `--workflow` cannot name the Pages run
+Key a CI waiter on `gh run list --commit "$(git rev-parse <ref>)"` and pick a run by name in `--jq`: a short SHA returns an empty list with exit 0, and `--workflow 'pages build and deployment'` fails, because GitHub's built-in Pages run has no workflow file.
+
+Both fail quietly in a waiter: an empty list reads as "no runs yet", so the loop runs to its cap, and a failed `--workflow` lookup leaves the run id empty.
+
+*1 line of evidence for this rule is in `conventions/ci-monitoring.md`.*
+
 # Code Check — R
 Traps in R: the language and base/utils behaviour, package internals (`R CMD build`, `.Rbuildignore`, roxygen, lintr, `data-raw/`, testthat, pak), and the DBI/duckdb/arrow data layer.
 
@@ -946,6 +986,9 @@ A script that reads a file, transforms it, and writes it **back to the same path
 
 ### `glue()` trims common leading whitespace
 - `glue::glue()` strips the common indentation of its input, so a template whose output must preserve exact indentation (XML, YAML, Makefiles, Python) comes out subtly wrong — valid-looking, wrongly indented.
+
+### A `glue()` named argument shadows caller variables in the arguments after it
+Compute each value before the call and pass the result.
 
 ### `f(g(x)) <- v` needs a `g<-`, not an evaluated `g(x)`
 - R parses **any** call on the left of `<-` as a replacement function, all the way down.
@@ -1122,7 +1165,7 @@ Record a flag in the `withCallingHandlers()` handler, `invokeRestart("muffleWarn
 testthat 3e captures the first message the expression emits and matches the regexp against **that one**.
 
 ### `pak` refuses to install a package that needs no compiler
-`pak::pak()` routes through `pkgbuild::check_build_tools()`, which fails with *"Could not find tools necessary to compile a package"* whenever `xcode-select -p` points at `/Applications/Xcode.app/...` while the Command Line Tools are what is actually installed — **regardless of whether the package has any compiled code**.
+Install a pure-R package with `R CMD INSTALL <checkout>` when `pak::pak()` reports missing build tools: on macOS its check fails whenever `xcode-select -p` names Xcode.app and only the Command Line Tools are installed.
 
 ### `as.integer("NaN")` is `0`, and `as.integer(NaN)` is `NA`
 The string round trip is the bug.
@@ -1169,6 +1212,9 @@ End every `ORDER BY` on a unique key, order any fetch whose rows are summed, and
 ### `sprintf("%g", x)` writes `Inf` and `NA` into SQL as bare words, which Postgres reads as column names
 A numeric formatter such as `sprintf("%.10g", x)` has no SQL form for non-finite values.
 
+### Verify a float-formatting fix in its consumer, not through `as.numeric()`
+Compare where the literal is parsed (in Postgres, `SELECT <literal>::float8 = <stored>`) or compare IEEE 754 bytes: R's `as.numeric()` is not correctly rounded, so a correct `%.17g` string can fail to round-trip through R.
+
 ### An `information_schema` lookup by the literal table name misses what Postgres resolves
 `WHERE table_schema = 's' AND table_name = 'T'` compares the text you passed.
 
@@ -1207,6 +1253,9 @@ Read the exit status off the result: `st <- attr(out, "status")`, which is `NULL
 
 ### Forked `parallel::mclapply()` workers segfault in `glm.fit` under macOS Accelerate BLAS
 Fit models in parallel on socket workers (`parallel::makeCluster()` with `parLapply()`), not forks.
+
+### `clusterApply()` returns `NULL` for no tasks, not an empty list
+Guard an empty input before naming or indexing a `clusterApply()` or `clusterApplyLB()` result: given zero tasks both return `NULL`, where `parLapply()` and `lapply()` return `list()`.
 
 ### `c(name = x)` keeps `x`'s own name, so a value from a named vector becomes `name.X`
 Strip the name before you label it: `c(axis = unname(v[1]))` or `c(axis = v[[1]])`.
@@ -1267,6 +1316,9 @@ Keep helper and ad hoc scripts out of `data/`, which pkgload treats as package d
 
 ### `ifelse()` with an all-NA test returns a logical vector, whatever `yes` and `no` are
 Resolve NA before an `ifelse()` whose result must keep a type (`blocked <- !is.na(blocked) & blocked`), or use `dplyr::if_else(..., missing = )`.
+
+### `sub()` takes one replacement, not one per element
+Paste a per-element suffix on instead (`paste0(sub("]$", "", x), suffix)`): a `replacement` longer than one is used as its first element everywhere, with only a warning.
 
 # Code Check — Shell
 Tool-level traps in bash, sed, git and `gh`, and in the host toolchain those commands depend on.
@@ -1339,6 +1391,9 @@ Never chain a destructive setup and its undo (`git stash && slow && git stash po
 ### `git checkout <path>` restores from the index, not from HEAD
 After a `git add`, `git checkout <path>` reinstates the broken *staged* copy — so the "fix" reproduces the failure and reads as though the edit was wrong.
 
+### Six git plumbing calls whose default answers a different question
+Pass the flag that names the question you mean: `git log -m` and `--name-only`, `update-ref HEAD`, a checkout over an ignored file, `rev-parse --git-path` and a check of the `*_HEAD` files each succeed having answered or written something else.
+
 ### A value validated with one numeric grammar and consumed with another
 Normalise a numeric string once (digits only and at most 9 of them, then `x=$((10#$x))`, then a bounded range): `test` reads base 10, `$(( ))` reads a leading zero as octal and wraps past 2^63.
 
@@ -1358,7 +1413,7 @@ An assertion around something that might hang can only pass or hang, never fail 
 `aws s3 cp` gives one exit 1 and 404 text for a missing key and a missing bucket, so probe `s3api head-bucket` then `head-object`: only a 404 from a reachable bucket means absent; a 403 is permissions.
 
 ### An S3 multipart ETag depends on the uploader's part size, so try every size that gives its part count
-Verify an upload by comparing each object's ETag with its file, and for a multipart ETag (`<md5 of the part md5s>-N`) try every part size whose `ceiling(size / part) == N`: the size is the uploading machine's `multipart_chunksize`, which differs between machines.
+Verify an upload by comparing each object's ETag with its file, trying for a multipart ETag every part size that gives its part count: the size is the uploader's `multipart_chunksize`, which differs between machines.
 
 ### A verification command can be shadowed by a shell function or alias
 - The shell is initialized from the user's profile, so `diff`, `grep`, `ls`, `cat` and friends may resolve to a wrapper rather than the binary you assume.
@@ -1408,6 +1463,9 @@ Write `n=$(grep -c …) || n=0`, never `|| echo 0` inside the substitution: `gre
 ### macOS `/usr/bin/awk` aborts when a regex meets a byte slice that cuts a multibyte character
 Test a `substr()` slice with `==`, never with `~`, `match()` or `sub()`: the stock macOS awk counts bytes in `substr()` but converts a regex operand to wide characters, and a partial UTF-8 sequence kills the whole program.
 
+### macOS `sed` dies on an invalid byte, and GNU sed misparses it
+Parse logs with `LC_ALL=C sed`: a regex that scans an invalid UTF-8 byte exits 1 on macOS and misparses silently with GNU sed.
+
 ### A variable in a sed replacement is parsed, so its `\` and `&` are not literal
 Never interpolate data into the replacement half of `sed "s#…#$var#"`: sed reads `\(` as `(`, and `&` as the whole match, so the line written is not the value held.
 
@@ -1430,7 +1488,7 @@ Count instead: `while :; do left=0; for i in $ids; do done_yet "$i" || left=$((l
 Write `cd "$D" || exit 1` (or `cd "$D" && …`), never `cd "$D"; …`: without the guard, a missing directory prints one error and the rest of the line runs wherever the shell stood, including its file writes.
 
 ### macOS `/bin/bash` 3.2 quote-matches a heredoc inside `$( )`, so an apostrophe in the body is a syntax error
-Pass multi-line text through a file (`--body-file`, `-F`) rather than `"$(cat <<'EOF' … EOF)"`: bash 3.2 scans the command substitution for balanced quotes before it sees the heredoc, so `it's` in a quoted heredoc body fails with ``unexpected EOF while looking for matching `''``, while …`
+Pass multi-line text through a file (`--body-file`, `-F`), never `"$(cat <<'EOF' … EOF)"`: bash 3.2 matches quotes inside `$( )` before it reads the heredoc, so an unpaired apostrophe in the body is a syntax error.
 
 ### A skill's bash blocks run as separate calls, and its `$` + digits are replaced by its arguments
 Open every block after the first with guards on what it inherits: re-set its variables, confirm the path is the expected tree, and refuse edits or commits the previous block did not check.
@@ -1473,6 +1531,9 @@ Run a long Python command with `PYTHONUNBUFFERED=1` (or `python -u`) when its ou
 
 ### `aws s3` progress lines end in `\r`, so a line-based count of a saved log reads zero
 Translate before counting: `tr '\r' '\n' < log | grep -c '^upload:'`.
+
+### `a && b || c` runs `c` when any step before the `||` fails
+Give each setup step its own `|| exit 1` and branch with `if`: in `a && b || c`, `c` runs when `a` fails as well as when `b` does, so a failed setup reaches the fallback with its variable unset.
 
 # Code Check — Spatial
 terra, sf, bcdata, GDAL/OGR CLIs.
@@ -1535,6 +1596,9 @@ GDAL accepts a UTC offset in a GeoPackage `DATETIME` and silently drops it, retu
 
 ### QGIS embeds a layer's style in the `.qgs`, so rewriting the `.qml` sidecar changes nothing
 A `.qgs` carries each layer's style **inside** its `<maplayer>` node — the sidecar's children are copied in when the layer is declared.
+
+### A QGIS value map's empty choice is a fixed GUID value; its `<NULL>` label is editable
+When reading a value map's choices from a `.qml` or `.qgs`, drop QGIS's empty choice by its value, `{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}`, not by its `<NULL>` label, which a form author can edit.
 
 ### A GeoPackage is a SQLite database, and that leaks in three ways
 Writing to one directly (a `layer_styles` row, an attribute fix) is a plain `INSERT` and needs no GDAL.
@@ -1754,6 +1818,9 @@ Pass `shape = "bbox"` (or a polygon) to `rasterize_terrain()` when the DTM must 
 
 ### A plain difference of two DEMs can hide a half-cell shift between them
 Before calling two DEMs the same surface, regress their difference on the reference's gradient, or difference them at each half-cell shift.
+
+### A nodata value written to PNG comes back from magick as alpha
+Read a PNG that terra or GDAL wrote with `magick::image_convert(magick::image_read(f), matte = FALSE)`: their nodata becomes a tRNS chunk, which magick reads as alpha.
 
 # Code Check Conventions
 Structured checklist for reviewing diffs before commit.
@@ -2064,6 +2131,14 @@ something and the issue did not:
 Vigilance does not catch this, because the drift happens exactly when attention
 moves to the merge. `/gh-pr-merge` reconciles at that moment — see its step 3b.
 
+## Work owed between two open issues stays in both bodies
+
+A task whichever PR merges second must do stays in both issue bodies until it is done, and
+the merge that does it ticks both copies. Never write "moved to #M": a move bets on a merge
+order nobody has decided. `/gh-pr-merge` 3b re-reads the other issue before writing a pointer to it.
+
+*4 lines of evidence for this rule are in `conventions/feature-workflow.md`.*
+
 ## Public-repo text describes the package, and points nowhere private
 
 In a public repo, issues, PRs, comments, commit messages, NEWS and roxygen describe
@@ -2097,9 +2172,8 @@ organisation, and it names internal work as it does so.
   Describe the dependency in words ("work on a downstream estimate is in progress"), or
   leave it out.
 - **One exception: the R&D tracking cross-reference.** `/gh-pr-push` writes it into PR
-  bodies from the repo's `CLAUDE.md`, which is where its repo and issue number are
-  configured. Both stay: they are deliberate claim tagging, and they are the only private
-  pointers this rule allows.
+  bodies, resolved from the tracking issues' titles. It stays: it is deliberate claim
+  tagging, and the only private pointer this rule allows.
 - **A scrub covers the surfaces you were editing; re-grep the others before merging.** The
   issue body is drafted at plan time and the code later, so scrubbing the tree and the PR
   body leaves the body untouched. `/gh-pr-merge` step 3b is the moment to grep it, then
@@ -2223,6 +2297,14 @@ field code, fiscal year, and the consultant by name.
 The visibility filter was working correctly the whole time. It rests on an
 assumption pkgdown breaks: that a private repo's `CLAUDE.md` stays private.
 
+Pages from a private repo's **branch root** goes further and publishes the repository itself.
+With `main` `/` as the source and legacy Jekyll building it, the repository's files are served,
+`CLAUDE.md`, `planning/`, `research/` and `comms/` among them. Serve a site from `/docs` or `gh-pages`, and
+check a private repo's Pages source with `gh api repos/<owner>/<repo>/pages --jq .source`:
+`gh-pages` at `/` is the built site, the default branch at `/` is the repository.
+
+*4 lines of evidence for this rule are in `conventions/pkgdown-publishing.md`.*
+
 ### Remove it before the build, not after
 
 There are three copies, not one:
@@ -2341,6 +2423,17 @@ Same family as the cross-reference gotcha already noted for vignettes (`\@ref(fi
 to a literal): bookdown output formats do not carry all of bookdown's machinery through pkgdown,
 and each missing piece fails quietly in its own way. Verify anything structural — footnotes,
 cross-references, numbered captions — against the built page the first time you use it.
+
+## Tables in an article: a footnote goes through kableExtra on an HTML kable
+
+Write a table that needs a note as `knitr::kable(x, format = "html", caption = ) |>
+kableExtra::kable_styling(full_width = FALSE) |> kableExtra::footnote(general = , general_title = "")`,
+with `kableExtra` in `Suggests`. A pandoc footnote is dropped (above), and a note long enough to
+need one does not belong in the caption. Both pieces matter: `footnote()` on a bare `kable()`
+numbers the caption twice ("Table 2: Table 3:") and writes `NA` into the table's `style`
+attribute, and adding `kable_styling()` without `format = "html"` still doubles the caption.
+
+*3 lines of evidence for this rule are in `conventions/pkgdown-publishing.md`.*
 
 
 # Planning Conventions
@@ -2872,9 +2965,7 @@ Close function issues via commit messages — see Closing Issues in newgraph con
     reachable, not whether the *service* is behaving, and it calls
     `skip_if_not_installed("curl")`, so add `curl` to Suggests or the guard
     itself is what breaks.
-  - Caught 2026-08 in gq#57 by self-review: a comment claiming "skipped off-CI"
-    sat directly above code that did not skip off-CI. Read the guard, not the
-    comment above it.
+  - Read the guard, not the comment above it.
 
 - **`testthat::test_file()` does NOT set `NOT_CRAN`, so re-running one file to
   diagnose a failure can execute none of it.** The mirror of the rule above, and
@@ -2889,11 +2980,10 @@ Close function issues via commit messages — see Closing Issues in newgraph con
   NOT_CRAN=true testthat::test_file("that.R") -> [ FAIL 0 | PASS 259 ]
   ```
 
-  Only the third line is evidence. Measured twice on 2026-09-01 in rfp, both
-  times while confirming whether a Docker-gated failure was a real regression —
-  which is exactly when a false "it passes now" is most expensive. Prefix
-  `NOT_CRAN=true` on any single-file re-run, or read the SKIP count rather than
-  the FAIL count.
+  Only the third line is evidence. Prefix `NOT_CRAN=true` on any single-file re-run, or
+  read the SKIP count rather than the FAIL count.
+
+*4 lines of evidence for this rule are in `conventions/r-packages.md`.*
 
 - **`local_mocked_bindings(.package = )` needs testthat >= 3.2.0.** A package
   pinned at `testthat (>= 3.0.0)` errors rather than skipping on an older
@@ -2947,10 +3037,6 @@ Instead, separate data generation from presentation:
 3. A comment in the vignette's setup chunk names the script: `# data from data-raw/script.R`
 4. bookdown controls all chunks — figure numbers, cross-refs work
 
-This is the same pattern as test data: `data-raw/` documents how the data
-was produced, committed artifacts make vignettes reproducible without the
-external resource.
-
 Then keep the vignette and its bundle true as both move:
 
 1. **Run the code the vignette shows.** The `data-raw/` script runs each `eval = FALSE`
@@ -2963,10 +3049,13 @@ Then keep the vignette and its bundle true as both move:
    to text, and diff. Only the prose you meant to change differs.
 5. **The bundle carries provenance**, the commit and date it was built at, which the
    vignette prints. A regeneration forced by a script change asserts every other element
-   `identical()` to the old bundle before it is committed; regenerate on the machine that built it when values pass
-   through BLAS.
+   `identical()` to the old bundle; rebuild where it was built when values pass through BLAS.
+6. **Install the branch before building an article whose bundle changed.** pkgdown renders
+   articles against the installed package, so `system.file("vignette-data", …)` reads the
+   installed copy's bundle, while `rmarkdown::render()` after `pkgload::load_all()` reads
+   the source tree's: the same article can pass one way and fail the other.
 
-*10 lines of evidence for this rule are in `conventions/r-packages.md`.*
+*13 lines of evidence for this rule are in `conventions/r-packages.md`.*
 
 ### Test data
 
@@ -3050,10 +3139,10 @@ EOF
 - `usethis::use_mit_license("New Graph Environment Ltd.")`; `Authors@R` as in `/citation-cff`
 - `usethis::use_testthat(edition = 3)`
 - `usethis::use_pkgdown()`
-- `usethis::use_github_action("pkgdown")`, then `timeout-minutes: 90` on its job
 - `usethis::use_directory("dev")` — reproducible setup script
 - `usethis::use_directory("data-raw")` — data generation scripts
 - Hex sticker: copy soul's `templates/make_hexsticker.R` to `data-raw/`
+- CI: copy soul's `templates/R-CMD-check.yaml` and `templates/pkgdown.yaml` (callers of `NewGraphEnvironment/flows`) to `.github/workflows/`
 - Set GitHub Pages to serve from `gh-pages` branch
 
 ### dev/dev.R
@@ -3122,7 +3211,7 @@ Make every README figure of the package's output from a committed script that ru
 Leave out roadmaps, changelogs, function tables, version strings in prose, counts of published things, and internal hosts or private repos, because each is kept elsewhere and goes stale in a README.
 
 # Writing for the Reader
-A vignette or report answers its reader's questions in their order and carries nothing that served only its authors.
+Anything an outside reader sees answers their questions in their order and carries nothing that served only its authors.
 
 *Index only: each rule's heading and first sentence. The full text is soul's `conventions/writing.md`; read it before writing or reviewing code in its area.*
 
@@ -3132,14 +3221,32 @@ Make each heading a question the reader brings, in their order, within any secti
 ### Open with the answer
 State the finding, with its numbers, in a sentence or two before any method, so a reader who stops there has the right answer.
 
+### Orient the reader in one sentence per place
+Say where each place is by the river it joins and the nearest town with a compass direction, checked against the Freshwater Atlas, and show the places on regional maps with keymaps.
+
+### Write each article to stand alone
+Never use a sibling article as the reference point: describe each method, bar and comparison on its own terms, and carry the sentence the reader needs rather than the sibling's figure or paragraph.
+
 ### Define a term in its own place, before it is used
 Give a term the article depends on its own short section before its first use, with its rule, why it exists, and how many cases fall each way.
 
 ### Prefer a plain phrase to a term
 Name a quantity by what it does for the reader ("the score; lower is better"), and keep a term only if the article reuses it, giving it its own place.
 
-### A figure or table must say something a sentence can't
-Keep a figure only when a sentence cannot carry its point, and a table only when its rows are parallel items compared on shared columns; otherwise write the sentence.
+### Species common names in lower case
+Write chinook salmon, coho and steelhead in lower case in prose and captions: it is our house style.
+
+### Choose the form that lands with the reader
+Pick a sentence, table, figure or map by which one tells the reader the story fastest, and judge it by its effect on the reader, not by a preference for prose.
+
+### A sentence beside a table says what it shows, never what it holds
+Say the pattern beside a figure or table and leave its values to it: restated medians, shares and month names are read twice, and a statistic the table does not hold has no source on the page.
+
+### A caption names every mark the figure draws
+When a figure gains a mark, its caption gains a phrase, or the new mark reads as one the caption already names.
+
+### Define, read and cite every statistic you name
+Give every statistic an article names, at the table that carries it, what it compares, how to read its values, a source, and a published rating scale beside the values where one exists.
 
 ### Cut what serves the authors
 Remove what the authors needed and the reader does not: parity with superseded products, paths to internal research, and how a decision was reached.
@@ -3150,11 +3257,23 @@ Describe each weakness in one sentence about what the product does, with no advi
 ### State each claim by the code's definition
 Describe a set the code defines by that definition, never by its best-known member or a nearby proxy, or the sentence and its guard cover the proxy, not the set.
 
+### Check that each guard covers the set its sentence names
+Give each claim a guard over the whole set its sentence names, at the precision written, and re-read the guard whenever the sentence moves or is reworded, as "State each claim by the code's definition" asks of the sentence.
+
 ### When explaining a decision, list every check and the way it points
 Count the checks from the data, not the conclusion, give each its direction, and call a choice the evidence did not make a decision.
 
 ### Name, link and cite the software
-Set a software name in code font, link its first mention and say what it is, and end an article with a "Software and citation" section.
+Cite every package an article uses inline at its first mention, ours included, data to its publisher and each claim to the page that says it, from one `.bib` of Zotero entries and the packages' own `citation()`.
 
 ### Measure the simplification
 Report word and line counts before and after a rewrite, against the forecast, and name what set the floor.
+
+### Lead with what the product does and why it matters
+Open every public piece with what the product does for the reader and why it matters, before anything about how it was made.
+
+### Let visuals carry the story where they land better
+Put the story in a map, figure or table whenever the reader takes it in faster there than from prose, and keep the prose to what the visual cannot say.
+
+### Cut any number or caveat that does not change what the reader understands
+Drop a number, a precision or a caveat that leaves the reader's understanding of the product where it was, because detail the reader does not need walls them off.
