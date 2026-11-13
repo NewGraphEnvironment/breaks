@@ -33,6 +33,7 @@ R/
   mod_map.R          — leaflet map, click handling, stream display
   mod_breaks.R       — break point management, snap, editable name_basin, compute via fresh::frs_watershed_split()
   mod_export.R       — export controls (subbasins.gpkg + break_points.csv)
+  utils_geo.R        — internal geometry helpers (validate/repair, leaflet-drawn feature to sf)
 data-raw/
   example_neexdzii.R — worked example: Neexdzii Kwa AOI + floodplain overlay
 inst/
@@ -89,6 +90,32 @@ Single shared connection created via `fresh::frs_db_conn()` in `app_server`, pas
 | `restoration_wedzin_kwa_2024/scripts/lulc_network-extract.R` | AOI and stream network preparation patterns |
 | `fresh/CLAUDE.md` | fresh package architecture, function naming, DB connection |
 | `diggs/CLAUDE.md` | golem app structure to follow |
+
+## Working Conventions
+
+### Update NEWS.md as you go
+
+Add the `NEWS.md` line in the commit that makes the change, not at release time.
+
+**Why:** reconstructing a release's changes at version-bump time misses some of them.
+
+**How to apply:** every user-visible change carries its NEWS line under the development heading in the same commit.
+
+### Drop Z and M before spatial predicates
+
+FWA streams from PostGIS arrive as XYZ or XYZM, and uploaded AOI files can carry Z or M too; call `sf::st_zm(x, drop = TRUE)` before `st_intersects()` and similar.
+
+**Why:** predicates on mixed-dimension geometry fail or misbehave; `app_server.R` and `mod_map.R` drop them for this reason.
+
+**How to apply:** any new code path that reads streams or an AOI drops Z/M before comparing geometries.
+
+### Download links in a bslib sidebar are `tags$a`, not `downloadButton()`
+
+`shiny::downloadButton()` does not bind inside `bslib::sidebar()`; `mod_export.R` uses a `tags$a` with class `shiny-download-link` instead.
+
+**Why:** this was the v0.3.0 "download buttons not working" fix; reverting to `downloadButton()` reintroduces it.
+
+**How to apply:** keep the manual `tags$a` form for any download control placed in the sidebar.
 
 <!-- BEGIN SOUL CONVENTIONS — DO NOT EDIT BELOW THIS LINE -->
 
