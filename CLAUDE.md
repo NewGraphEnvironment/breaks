@@ -880,8 +880,8 @@ A row with no suffix is a live failure on the default branch; `· fixed by run <
 leaves the failure live, and the row says `· newest run <id> <conclusion>`. A `startup_failure`
 (a workflow file pushed broken), a `timed_out` and an `action_required` are failures in their own
 right and print as rows. Keep a
-`cancelled` row only if its annotations report a timeout ("A timed-out run reads `cancelled`");
-say timed out, not failed.
+`cancelled` row only if its annotations report a timeout, or, where they cannot be read, no other
+run of its workflow arrived in its last 5 minutes ("A timed-out run reads `cancelled`"); say timed out (or by hand), not failed.
 
 *6 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
 
@@ -947,8 +947,8 @@ it admits. Anywhere else the sync pushes untagged, and this rule holds.
 Order them: watch the merge's runs to completion, *then* push anything else.
 
 Where a push has already gone out and cancelled something, `/gh-pr-merge` step 10 has the
-reading: `cancelled`/`skipped` is `⊘ superseded` unless its annotation reports a timeout, and the thing to confirm
-is that the newest SHA that started a run passed. Do not re-dispatch the cancelled one.
+reading: `skipped` is `⊘ superseded`, and `cancelled` is too when another run of its workflow arrived
+in its last 5 minutes, else `✗` (a timeout or a hand cancel); confirm the newest SHA that started a run passed. Do not re-dispatch the cancelled one.
 
 *3 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
 
@@ -993,9 +993,9 @@ re-run before they fix it is refused the same way.
 *6 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
 
 ## A timed-out run reads `cancelled`
-Read a `cancelled` run's annotations before calling it superseded: its job ids from `gh run view <id> --json jobs --jq '.jobs[].databaseId'`, then `gh api repos/<o>/<r>/check-runs/<job id>/annotations`. A timeout says "The job has exceeded the maximum execution time", and its `--log-failed` is empty.
+Read a `cancelled` run's annotations before calling it superseded: its job ids from `gh run view <id> --json jobs --jq '.jobs[].databaseId'`, then `gh api repos/<o>/<r>/check-runs/<job id>/annotations`. A timeout says "The job has exceeded the maximum execution time", and its `--log-failed` is empty. A fine-grained token has no Checks permission, so it cannot read annotations: read the runs instead (`gh api 'repos/<o>/<r>/actions/workflows/<id>/runs?created=%3C%3D<updated_at>&per_page=100'`). The cancel was superseded when another run of its workflow, not from a pull request, was created or started in its last 5 minutes (a group that does not cancel in progress leaves an earlier one waiting); otherwise it was a timeout or a hand cancel.
 
-*5 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
+*7 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
 
 ## R workflows live in NewGraphEnvironment/flows
 Change a runner, timeout or step there and fast-forward `v1`; a workflow marked at its top as its own is changed in its repo. Re-run all jobs: re-run failed reuses the old copy.
@@ -1024,15 +1024,15 @@ concurrency:
 
 `fail-fast: false` does not help — that governs failures, not cancellation.
 
-**It fails in the quiet direction.** A cancelled run reports `cancelled`, not `failure`,
-which `/gh-pr-merge` step 10 correctly reads as `⊘ superseded` — so two platforms that
-never ran look like two platforms that were superseded by a newer push. Nothing is red and
-nothing says the coverage was lost.
+**It fails in the quiet direction.** A cancelled run reports `cancelled`, not `failure`, so
+two platforms that never ran look like two superseded by a newer push, and nothing says the
+coverage was lost. `/gh-pr-merge` step 10 reads it as `✗` when no other run of its workflow
+arrived in its last 5 minutes, but the status column does not.
 
 The entries above concern cancellation **between pushes**, which is the behaviour you
 want. This is cancellation **within one push**, which is never what you want.
 
-*10 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
+*11 lines of evidence for this rule are in `conventions/ci-monitoring.md`.*
 
 
 ## A push `paths:` filter skips an empty commit, and dispatch and schedule run only from the default branch
